@@ -66,6 +66,7 @@ class Graph(object):
         self._sources = {}
         self.graph = defaultdict(dict)
         self.is_directed = directed
+        self.capacity = [edge.capacity for edge in edges ]
         self._add_connections(edges)
         if not residual:
             self.init_edges_capacity()
@@ -104,6 +105,13 @@ class Graph(object):
             for node_2_id, edge in list(inner_dict.items()):
                 edges.append(edge)
         return edges
+
+    def flow(self):
+        flow = []
+        for node_1_id, inner_dict in list(self.graph.items()):
+            for node_2_id, edge in list(inner_dict.items()):
+                flow.append(edge.flow)
+        return flow
 
     @property
     def sources(self):
@@ -179,7 +187,6 @@ class Graph(object):
         edges = []
         for node_1, inner_dict in list(self.graph.items()):
             for node_2, edge in list(inner_dict.items()):
-                print(edge)
                 if edge.capacity - edge.flow > 0:
                     edges.append(Edge(self.nodes[node_1], self.nodes[node_2],
                                       capacity=edge.capacity - edge.flow))
