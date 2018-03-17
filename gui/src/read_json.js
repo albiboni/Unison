@@ -2,8 +2,8 @@ import { node } from "./node";
 import { link } from "./link";
 import { product} from "./product"
 
-export function ImportJSON(node_list, link_list, product_list) {
-  var json_data = require('./demo_graph.json');  // TODO: Change path
+export function ImportJSON(json_response, node_list, link_list, product_list) {
+  var json_data = json_response; // TODO: Change path
   for (var connection in json_data.graph) {
     var input_name = json_data.graph[connection][0];
     var output_name = json_data.graph[connection][1];
@@ -58,3 +58,14 @@ function update_node_list(parameter_name, node_list, json_data) {
   return {'node_list': node_list, 'new_node': new_node};
 }
 
+export function ImportJSON_response(json_reposnse, node_list) {
+  for (var machine in json_reposnse.nodes) {
+    var idx = node_list.map(x => x.name).indexOf(machine);
+    node_list[idx].output_rate = json_reposnse[machine]["output_rate"];
+  }
+  for (var sup in json_reposnse.external_suppliers) {
+    var idx = node_list.map(x => x.name).indexOf(sup);
+    node_list[idx].output_rate = json_reposnse[sup]["output_rate"];
+  }
+  return node_list;
+}

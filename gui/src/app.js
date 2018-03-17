@@ -12,6 +12,7 @@ var node_list = [], link_list = [], product_list = [], machines_list, external_s
 var product_json;
 var selected_item = null;
 var data_json = {product:{}, machines:{}, external_suppliers:{}, graph:{}};
+var response_json = {};
 var node_width = { x: 170, y: 100 };
 
 var strength = 1.0;
@@ -37,6 +38,7 @@ import { machines} from "./machines";
 import { external_suppliers} from "./external_suppliers";
 import { grapth } from "./graphs";
 import { ExportJSON } from "./write_json";
+import { ImportJSON, ImportJSON_response } from "./read_json";
 
 var canvas = document.getElementById("canvas");
 canvas.addEventListener('click', function(e) {
@@ -51,7 +53,7 @@ canvas.addEventListener('mousewheel', function (e) {
     scale = 1 - scale_dx;
   }
     context.scale(scale, scale)
- 
+
 });
 
 
@@ -63,7 +65,7 @@ document.getElementById('is_subproduct').addEventListener('change', function (e)
     })
   } else {
     $(".c_input").attr("disabled", false);
-  } 
+  }
 });
 
 
@@ -119,7 +121,7 @@ function populate_product_list() {
         }
 
         sub_products[name] = link_list[j].amount;
-   
+
       }
 
     }
@@ -132,17 +134,17 @@ function populate_product_list() {
 }
 
 function send_graph() {
-  var json_string = ExportJSON(node_list, link_list, product_list)
+  var json_string = ExportJSON(node_list, link_list, product_list);
   $.ajax({
     type: "POST",
     url: "http://127.0.0.1:12348",
     data: json_string,
     contentType: "application/json",
     success: function (response) {
-      console.log(response)
+      response_json = $.parseJSON(response);
+      node_list = ImportJSON_response(json_string, node_list);
     }
-  })
-
+  });
 }
 
 
@@ -183,14 +185,14 @@ if (key == ';') {
   document.querySelector(".blur").style.display = "none";
 }
 pressed = true;
-  
+
 });
 
 
 function delete_selected_item() {
   if (selected_item instanceof link) {
     link_list.splice(link_list.indexOf(selected_item), 1);
-    
+
   } else if (selected_item instanceof node) {
     for (var index = 0; index < link_list.length; index++) {
       if (link_list[index].connected_to === selected_item || link_list[index].connected_from === selected_item) {
@@ -224,7 +226,7 @@ canvas.addEventListener("mousedown", function (e) {
         link_list.push(new link(selected_item, node_list[index], 0));
       }
 
-      
+
       try {
         selected_item.selected = false;
       } catch (err) { }
@@ -279,7 +281,7 @@ canvas.addEventListener("mousedown", function (e) {
   } catch (err) { }
   selected_item = null;
 
- 
+
 
 });
 
@@ -335,7 +337,7 @@ function clear_screen() {
 }
 
 function render_nodes() {
-     
+
   context.beginPath();
   context.strokeStyle = "black";
   for (var index = 0; index < node_list.length; index++) {
@@ -362,8 +364,8 @@ function render_nodes() {
       context.fillText("Max: " + node_list[index].max_output_rate, node_list[index].x + 2, node_list[index].y + 13);
       context.fillText("Min: " + node_list[index].min_output_rate, node_list[index].x + 2, node_list[index].y + node_width.y - 2);
     }
-    
-      
+
+
   }
   context.stroke();
   context.closePath();
@@ -401,7 +403,7 @@ function canvas_arrow(context, node1, node2) {
   context.lineTo(tox - Math.cos(angle) * radius - headlen * Math.cos(angle - Math.PI / 6), toy - Math.sin(angle) * radius - headlen * Math.sin(angle - Math.PI / 6));
   context.moveTo(tox - Math.cos(angle) * radius, toy - Math.sin(angle) * radius);
   context.lineTo(tox - Math.cos(angle) * radius - headlen * Math.cos(angle + Math.PI / 6), toy - Math.sin(angle) * radius - headlen * Math.sin(angle + Math.PI / 6));
-  context.fillText(node1.output_product, (fromx + tox)/2, (toy + fromy)/2); 
+  context.fillText(node1.output_product, (fromx + tox)/2, (toy + fromy)/2);
 
 }
 
