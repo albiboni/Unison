@@ -58,6 +58,12 @@
         }
     },
     "external_suppliers": {
+        "Supplier_of_flour": {
+            "min_output_rate": 0.0,
+            "max_output_rate": 10000000000000.0,
+            "output_rate": 0.0,
+            "output_product": "flour"
+        },
         "Supplier_of_water": {
             "min_output_rate": 0.0,
             "max_output_rate": 10000000000000.0,
@@ -69,12 +75,6 @@
             "max_output_rate": 10000000000000.0,
             "output_rate": 0.0,
             "output_product": "cream"
-        },
-        "Supplier_of_flour": {
-            "min_output_rate": 0.0,
-            "max_output_rate": 10000000000000.0,
-            "output_rate": 0.0,
-            "output_product": "flour"
         }
     },
     "graph": [
@@ -106,6 +106,57 @@
         [
             "Filling maker",
             "Supplier_of_flour",
+            0.0
+        ]
+    ],
+    "schedule": [
+        [
+            "Pie maker",
+            0.5,
+            3.958064516129032,
+            "Dough maker, Filling maker",
+            66.66666666666667
+        ],
+        [
+            "Dough maker",
+            0.25806451612903225,
+            0.25806451612903203,
+            "Supplier_of_flour, Supplier_of_water",
+            51.666666666666664
+        ],
+        [
+            "Supplier_of_flour",
+            0.0,
+            0.0,
+            "",
+            0.0
+        ],
+        [
+            "Supplier_of_water",
+            0.0,
+            0.0,
+            "",
+            0.0
+        ],
+        [
+            "Filling maker",
+            0.29268292682926833,
+            2.258064516129032,
+            "Supplier_of_cream, Supplier_of_flour",
+            51.24999999999999
+        ],
+        [
+            "Supplier_of_cream",
+            0.0,
+            1.965381589299764,
+            "",
+            0.0
+        ],
+        [
+            "Supplier_of_flour",
+            0.0,
+            1.965381589299764,
+            "",
             0.0
         ]
     ]
