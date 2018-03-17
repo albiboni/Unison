@@ -65,7 +65,7 @@
 # Mac files
 #.DS_Store
 
-
+*.cpython-36.pyc
 
 /gui/node_modules
 /gui/.DS_Store

@@ -2,6 +2,7 @@
 Created by Alejandro Daniel Noel 
 """
 from typing import List
+from math import ceil
 
 from core.plant_graph.ExternalSupplier import ExternalSupplier
 from core.plant_graph.product import Product
@@ -112,7 +113,7 @@ class Machine:
 
     def get_scheduling(self, end_time, output_units_required):
         # Row data: [process_name, start_time, end_time, performance_percent]
-        duration = (int(output_units_required / self.batch_size) + 1) * self.batch_time
+        duration = ceil(output_units_required / self.batch_size) * self.batch_time
         scheduling = [[self.name,
                        end_time - duration,
                        end_time,

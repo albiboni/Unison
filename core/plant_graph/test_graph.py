@@ -6,8 +6,8 @@ import json
 import unittest
 
 from core.plant_graph.ExternalSupplier import ExternalSupplier
-from core.plant_graph.Machine import Machine
-from core.plant_graph.Product import Product
+from core.plant_graph.machine import Machine
+from core.plant_graph.product import Product
 from core.plant_graph.json_parser import write_json, read_json
 
 

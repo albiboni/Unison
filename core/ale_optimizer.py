@@ -1,7 +1,7 @@
 """
 Created by Alejandro Daniel Noel
 """
-from core.plant_graph.Machine import Machine
+from core.plant_graph.machine import Machine
 
 
 def maximize_output(output_machine: Machine):

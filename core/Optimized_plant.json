@@ -29,8 +29,8 @@
         "pie": {
             "units": "unit",
             "sub_products": {
-                "dough": 0.4,
-                "filling": 0.6
+                "dough": 0.5,
+                "filling": 0.5
             }
         }
     },
@@ -43,10 +43,18 @@
             "is_on": true,
             "output_product": "dough"
         },
+        "Dough maker 2": {
+            "min_batch_time": 200.0,
+            "max_batch_time": 1000.0,
+            "batch_time": 200.0,
+            "batch_size": 50.0,
+            "is_on": true,
+            "output_product": "dough"
+        },
         "Filling maker 1": {
             "min_batch_time": 100.0,
             "max_batch_time": 500.0,
-            "batch_time": 160.0,
+            "batch_time": 120.0,
             "batch_size": 20.0,
             "is_on": true,
             "output_product": "filling"
@@ -54,7 +62,7 @@
         "Filling maker 2": {
             "min_batch_time": 100.0,
             "max_batch_time": 500.0,
-            "batch_time": 160.0,
+            "batch_time": 120.0,
             "batch_size": 20.0,
             "is_on": true,
             "output_product": "filling"
@@ -62,7 +70,7 @@
         "Filling maker 3": {
             "min_batch_time": 100.0,
             "max_batch_time": 500.0,
-            "batch_time": 160.0,
+            "batch_time": 120.0,
             "batch_size": 20.0,
             "is_on": true,
             "output_product": "filling"
@@ -70,24 +78,17 @@
         "Pie maker": {
             "min_batch_time": 10.0,
             "max_batch_time": 300.0,
-            "batch_time": 47.701863354037265,
+            "batch_time": 29.883268482490273,
             "batch_size": 30.0,
             "is_on": true,
             "output_product": "pie"
         }
     },
     "external_suppliers": {
-        "supplier of flour": {
-            "min_batch_time": 0.001,
-            "max_batch_time": 1.0,
-            "batch_time": 266666666.6666667,
-            "batch_size": 10000000.0,
-            "output_product": "flour"
-        },
         "supplier of cream": {
             "min_batch_time": 0.001,
             "max_batch_time": 1.0,
-            "batch_time": 114285714.2857143,
+            "batch_time": 85714285.71428572,
             "batch_size": 10000000.0,
             "output_product": "cream"
         },
@@ -97,6 +98,13 @@
             "batch_time": 66666666.66666667,
             "batch_size": 10000000.0,
             "output_product": "water"
+        },
+        "supplier of flour": {
+            "min_batch_time": 0.001,
+            "max_batch_time": 1.0,
+            "batch_time": 200000000.00000003,
+            "batch_size": 10000000.0,
+            "output_product": "flour"
         }
     },
     "graph": [
@@ -104,6 +112,11 @@
             "Pie maker",
             "Dough maker",
             22.3
+        ],
+        [
+            "Pie maker",
+            "Dough maker 2",
+            20.1
         ],
         [
             "Pie maker",
@@ -127,6 +140,16 @@
         ],
         [
             "Dough maker",
+            "supplier of water",
+            0.0
+        ],
+        [
+            "Dough maker 2",
+            "supplier of flour",
+            0.0
+        ],
+        [
+            "Dough maker 2",
             "supplier of water",
             0.0
         ],
@@ -169,28 +192,34 @@
             100.0
         ],
         [
+            "Dough maker 2",
+            2.200000000000017,
+            202.20000000000002,
+            100.0
+        ],
+        [
             "Filling maker 3",
-            47.0,
+            87.0,
             207.0,
-            62.5
+            83.33333333333331
         ],
         [
             "Filling maker 1",
-            49.099999999999994,
-            209.1,
-            62.5
+            89.10000000000002,
+            209.10000000000002,
+            83.33333333333331
         ],
         [
             "Filling maker 2",
-            51.19999999999999,
-            211.2,
-            62.5
+            91.20000000000002,
+            211.20000000000002,
+            83.33333333333331
         ],
         [
             "Pie maker",
-            222.29999999999998,
-            270.00186335403725,
-            20.963541666666668
+            222.3,
+            252.1832684824903,
+            33.463541666666664
         ]
     ]
 }
