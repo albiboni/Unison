@@ -30,15 +30,15 @@
             "units": "unit",
             "sub_products": {
                 "dough": 0.5,
-                "filling": 0.5
+                "filling": 0.2
             }
         }
     },
     "machines": {
-        "Dough maker": {
+        "Dough maker 1": {
             "min_batch_time": 200.0,
             "max_batch_time": 1000.0,
-            "batch_time": 200.0,
+            "batch_time": 258.06451612903226,
             "batch_size": 50.0,
             "is_on": true,
             "output_product": "dough"
@@ -46,7 +46,7 @@
         "Dough maker 2": {
             "min_batch_time": 200.0,
             "max_batch_time": 1000.0,
-            "batch_time": 200.0,
+            "batch_time": 258.06451612903226,
             "batch_size": 50.0,
             "is_on": true,
             "output_product": "dough"
@@ -54,7 +54,7 @@
         "Filling maker 1": {
             "min_batch_time": 100.0,
             "max_batch_time": 500.0,
-            "batch_time": 120.0,
+            "batch_time": 193.54838709677418,
             "batch_size": 20.0,
             "is_on": true,
             "output_product": "filling"
@@ -62,7 +62,7 @@
         "Filling maker 2": {
             "min_batch_time": 100.0,
             "max_batch_time": 500.0,
-            "batch_time": 120.0,
+            "batch_time": 193.54838709677418,
             "batch_size": 20.0,
             "is_on": true,
             "output_product": "filling"
@@ -70,15 +70,31 @@
         "Filling maker 3": {
             "min_batch_time": 100.0,
             "max_batch_time": 500.0,
-            "batch_time": 120.0,
+            "batch_time": 193.54838709677418,
             "batch_size": 20.0,
             "is_on": true,
             "output_product": "filling"
         },
+        "Dough maker 3": {
+            "min_batch_time": 200.0,
+            "max_batch_time": 1000.0,
+            "batch_time": 258.06451612903226,
+            "batch_size": 50.0,
+            "is_on": true,
+            "output_product": "dough"
+        },
+        "Dough maker 4": {
+            "min_batch_time": 200.0,
+            "max_batch_time": 1000.0,
+            "batch_time": 258.06451612903226,
+            "batch_size": 50.0,
+            "is_on": true,
+            "output_product": "dough"
+        },
         "Pie maker": {
             "min_batch_time": 10.0,
             "max_batch_time": 300.0,
-            "batch_time": 29.883268482490273,
+            "batch_time": 19.35483870967742,
             "batch_size": 30.0,
             "is_on": true,
             "output_product": "pie"
@@ -88,21 +104,21 @@
         "supplier of cream": {
             "min_batch_time": 0.001,
             "max_batch_time": 1.0,
-            "batch_time": 85714285.71428572,
+            "batch_time": 138248847.9262673,
             "batch_size": 10000000.0,
             "output_product": "cream"
         },
         "supplier of flour": {
             "min_batch_time": 0.001,
             "max_batch_time": 1.0,
-            "batch_time": 200000000.00000003,
+            "batch_time": 129032258.06451611,
             "batch_size": 10000000.0,
             "output_product": "flour"
         },
         "supplier of water": {
             "min_batch_time": 0.001,
             "max_batch_time": 1.0,
-            "batch_time": 66666666.66666667,
+            "batch_time": 86021505.37634408,
             "batch_size": 10000000.0,
             "output_product": "water"
         }
@@ -110,7 +126,7 @@
     "graph": [
         [
             "Pie maker",
-            "Dough maker",
+            "Dough maker 1",
             22.3
         ],
         [
@@ -134,12 +150,22 @@
             15.3
         ],
         [
-            "Dough maker",
+            "Pie maker",
+            "Dough maker 3",
+            22.3
+        ],
+        [
+            "Pie maker",
+            "Dough maker 4",
+            22.3
+        ],
+        [
+            "Dough maker 1",
             "supplier of flour",
             0.0
         ],
         [
-            "Dough maker",
+            "Dough maker 1",
             "supplier of water",
             0.0
         ],
@@ -181,45 +207,77 @@
         [
             "Filling maker 3",
             "supplier of flour",
+            0.0
+        ],
+        [
+            "Dough maker 3",
+            "supplier of flour",
+            0.0
+        ],
+        [
+            "Dough maker 3",
+            "supplier of water",
+            0.0
+        ],
+        [
+            "Dough maker 4",
+            "supplier of flour",
+            0.0
+        ],
+        [
+            "Dough maker 4",
+            "supplier of water",
             0.0
         ]
     ],
     "schedule": [
         [
-            "Dough maker",
+            "Dough maker 1",
             0.0,
-            200.0,
-            100.0
+            258.0645161290323,
+            77.5
+        ],
+        [
+            "Dough maker 3",
+            0.0,
+            258.0645161290323,
+            77.5
+        ],
+        [
+            "Dough maker 4",
+            0.0,
+            258.0645161290323,
+            77.5
         ],
         [
             "Dough maker 2",
-            2.200000000000017,
-            202.20000000000002,
-            100.0
+            2.2000000000000455,
+            260.2645161290323,
+            77.5
         ],
         [
             "Filling maker 3",
-            87.0,
-            207.0,
-            83.33333333333331
+            71.5161290322581,
+            265.0645161290323,
+            51.666666666666664
         ],
         [
             "Filling maker 1",
-            89.10000000000002,
-            209.10000000000002,
-            83.33333333333331
+            73.6161290322581,
+            267.1645161290323,
+            51.666666666666664
         ],
         [
             "Filling maker 2",
-            91.20000000000002,
-            211.20000000000002,
-            83.33333333333331
+            75.7161290322581,
+            269.2645161290323,
+            51.666666666666664
         ],
         [
             "Pie maker",
-            222.3,
-            252.1832684824903,
-            33.463541666666664
+            280.36451612903227,
+            299.7193548387097,
+            51.666666666666664
         ]
     ]
 }

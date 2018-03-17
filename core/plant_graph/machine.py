@@ -146,4 +146,6 @@ class Machine:
             return self
         else:
             for supplier in self.suppliers:
-                return supplier.search_machine_by_name(name)
+                machine = supplier.search_machine_by_name(name)
+                if machine is not None:
+                    return machine
