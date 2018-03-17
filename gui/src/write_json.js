@@ -21,12 +21,12 @@ export function ExportJSON(node_list, link_list, product_list) {
   }
 
   for (var idx in node_list) {
-    if (node_list[idx].name.substring(0,8).toLowerCase() === "supplier") {
-      export_external_suppliers[node_list[idx].name] = {
+    if (node_list[idx].is_subproduct == true) {
+      export_external_suppliers["Supplier_of_" + node_list[idx].name] = {
         "min_output_rate": node_list[idx].min_output_rate,
         "max_output_rate": node_list[idx].max_output_rate,
         "output_rate": node_list[idx].output_rate,
-        "output_product":node_list[idx].output_product
+        "output_product":node_list[idx].name
       }
     }
     else {
@@ -47,14 +47,14 @@ export function ExportJSON(node_list, link_list, product_list) {
     "external_suppliers" : export_external_suppliers,
     "graphs": export_graphs};
 
-  var fs = require("fs");
-  alert(Object.keys(export_product));
-  fs.writeFile("./object.json", JSON.stringify(data, null, 4), (err) => {
-    if (err) {
-        console.error(err);
-        return;
-    };
-    console.log("File has been created");
-});
+
+  return JSON.stringify(data);
+//  fs.writeFile("./object.json", , (err) => {
+//    if (err) {
+//        console.error(err);
+//        return;
+//    };
+//    console.log("File has been created");
+//});
 
 }

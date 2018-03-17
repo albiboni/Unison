@@ -5,6 +5,7 @@ export class link {
     this.delay = delay;
     this.selected = false;
     this.label = node_from.output_product;
+    this.amount = 0;
   }
 
   set_delay(delay) {

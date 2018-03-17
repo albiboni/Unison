@@ -10,8 +10,10 @@ var node_min_or = document.getElementById("node_min_or");
 var node_max_or = document.getElementById("node_max_or");
 var node_op = document.getElementById("node_op");
 var node_sp = document.getElementById("is_subproduct");
+var node_io = document.getElementById("is_enabled");
 
 var link_delay = document.getElementById("link_delay");
+var link_amount = document.getElementById("link_amount");
 
 
 export function update_settings(selected_item) {
@@ -27,8 +29,11 @@ export function update_item_values(selected_item) {
     selected_item.max_output_rate = node_max_or.value;
     selected_item.output_product = node_op.value;
     selected_item.is_subproduct = node_sp.checked;
+    selected_item.is_on = node_io.checked;
+
   } else if (selected_item instanceof link) {
     selected_item.delay = link_delay.value;
+    selected_item.amount = link_amount.value;
   } else {
   }
 
@@ -43,8 +48,11 @@ function update_fields(selected_item) {
     node_max_or.value = selected_item.max_output_rate;
     node_op.value = selected_item.output_product;
     node_sp.checked = selected_item.is_subproduct;
+    node_io.checked = selected_item.is_on;
+
   } else if (selected_item instanceof link) {
     link_delay.value = selected_item.delay;
+    link_amount.value = selected_item.amount;
   } else {
   }
   if (node_sp.checked == false) {

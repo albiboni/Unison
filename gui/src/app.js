@@ -36,6 +36,7 @@ import { product } from "./product";
 import { machines} from "./machines";
 import { external_suppliers} from "./external_suppliers";
 import { grapth } from "./graphs";
+import { ExportJSON } from "./write_json";
 
 var canvas = document.getElementById("canvas");
 canvas.addEventListener('click', function(e) {
@@ -65,6 +66,7 @@ document.getElementById('is_subproduct').addEventListener('change', function (e)
   } 
 });
 
+
 document.querySelector(".create_node_button").addEventListener('click', function (e) {
   node_list.push(new node(300, 300, '', 0, 100, true, 0, ''));
 });
@@ -86,12 +88,63 @@ document.querySelector(".delete_link_button").addEventListener('click', function
 });
 
 document.querySelector(".optimize_graph").addEventListener('click', function (e) {
-  //send_graph();
+  populate_product_list();
+  send_graph();
 });
 
 document.querySelector(".gannt").addEventListener('click', function (e) {
   show_gannt_chart();
 });
+
+
+function populate_product_list() {
+
+  for (var i = 0; i < node_list.length; i++) {
+    if (product_list.map(x => x.name).includes(node_list[i].output_product)) {
+      continue;
+    }
+    if (node_list[i].is_subproduct) {
+      //TODO: FIX this sphagetti
+      product_list.push(new product(node_list[i].name, "-", {}));
+      continue;
+    }
+    var sub_products = {};
+    for (var j = 0; j < link_list.length; j++) {
+      if (link_list[j].connected_to === node_list[i]) {
+        var name;
+        if (link_list[j].connected_from.is_subproduct) {
+          name = link_list[j].connected_from.name;
+        } else {
+          name = link_list[j].connected_from.output_product;
+        }
+
+        sub_products[name] = link_list[j].amount;
+   
+      }
+
+    }
+    product_list.push(new product(node_list[i].output_product, "", sub_products));
+
+
+  }
+
+
+}
+
+function send_graph() {
+  var json_string = ExportJSON(node_list, link_list, product_list)
+  $.ajax({
+    type: "POST",
+    url: "http://127.0.0.1:12348",
+    data: json_string,
+    contentType: "application/json",
+    success: function (response) {
+      console.log(response)
+    }
+  })
+
+}
+
 
 function show_gannt_chart() {
   ingannt = true;
@@ -291,6 +344,8 @@ function render_nodes() {
       context.fillStyle = "#cccccc";
     } else if (node_list[index].is_subproduct == true) {
       context.fillStyle = "lightgreen";
+    } else if (node_list[index].is_on != true) {
+      context.fillStyle = "red";
     }else {
       context.fillStyle = "#ffffff";
     }

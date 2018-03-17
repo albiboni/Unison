@@ -9,7 +9,6 @@ export class node {
     this.output_rate = output_rate;
     this.is_on = is_on;
     this.output_product = op;
-
     this.selected = false;
     this.is_subproduct = false;
   }
