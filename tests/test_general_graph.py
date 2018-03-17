@@ -14,7 +14,7 @@ class TestGraph(unittest.TestCase):
         self.node_f = Node("f", 10, {"b": 3})
         self.node_g = Node("g", 10, {"f": 3})
         self.node_h = Node("h", 10, {"d": 2})
-        self.node_sink = Sink('t')
+        self.node_sink = Sink('t', dependency={'h': 1})
 
         self.edge_ac = Edge(self.node_a, self.node_c)
         self.edge_bd = Edge(self.node_b, self.node_d)
@@ -38,7 +38,7 @@ class TestGraph(unittest.TestCase):
         self.node2_e = Node("e", 12, dependencies={"c": 3})
         self.node2_f = Node("f", 8, dependencies={"d": 0.5})
         self.node2_g = Node("g", 4, dependencies={"e": 1.5, "f": 2})
-        self.sink2 = Sink("t")
+        self.sink2 = Sink("t", dependency={'g': 1})
 
         self.edge2_ac = Edge(self.node2_a, self.node2_c)
         self.edge2_bd = Edge(self.node2_b, self.node2_d)
@@ -50,6 +50,8 @@ class TestGraph(unittest.TestCase):
 
         self.graph2 = Graph([self.edge2_ac, self.edge2_bd, self.edge2_df, self.edge2_ce,
                           self.edge2_fg, self.edge2_eg, self.edge2_gt])
+        self.graph2.update_dependencies()
+
 
     def test_edges(self):
         self.assertEqual(self.graph['d']['e'], self.edge_de)
@@ -78,17 +80,31 @@ class TestGraph(unittest.TestCase):
         self.assertEqual(set(subgraphs[0].nodes), subgraph_0)
         self.assertEqual(set(subgraphs[1].nodes), subgraph_1)
 
+    def test_dependencies(self):
+        expected_dependency = {'a': 4}
+        self.assertEqual(self.graph2.nodes['c'].dependencies, expected_dependency)
+        expected_dependency_g = {'a': 18, 'b': 2}
+        expected_dependency_e = {'a': 12}
+        self.assertEqual(self.graph2.nodes['g'].dependencies, expected_dependency_g)
+        self.assertEqual(self.graph2.nodes['e'].dependencies, expected_dependency_e)
+
+    def test_dependencies_subgraph(self):
+        subgraph_0, subgraph_1 = self.graph2.get_subgraphs()
+        expected_dependency_g0 = {'a': 18}
+        expected_dependency_g1 = {'b': 2}
+        self.assertEqual(subgraph_0.nodes['g'].dependencies, expected_dependency_g0)
+        self.assertEqual(subgraph_1.nodes['g'].dependencies, expected_dependency_g1)
+
     def test_capacities(self):
         subgraph_0, subgraph_1 = self.graph2.get_subgraphs()
         subgraph_0.init_edges_capacity()
         subgraph_1.init_edges_capacity()
-        self.assertEqual(self.subgraph_0['a']['c'].capacity, math.inf)
-        self.assertEqual(self.subgraph_1['b']['d'].capacity, math.inf)
-        self.assertEqual(self.subgraph_0['c']['e'].capacity, 7)
-        self.assertEqual(self.subgraph_1['d']['f'].capacity, 8)
-        self.assertEqual(self.subgraph_0['e']['g'].capacity, 1)
-        self.assertEqual(self.subgraph_1['f']['g'].capacity, 8)
-
+        self.assertEqual(subgraph_0['a']['c'].capacity, math.inf)
+        self.assertEqual(subgraph_1['b']['d'].capacity, math.inf)
+        self.assertEqual(subgraph_0['c']['e'].capacity, 7)
+        self.assertEqual(subgraph_1['d']['f'].capacity, 8)
+        self.assertEqual(subgraph_0['e']['g'].capacity, 1)
+        self.assertEqual(subgraph_1['f']['g'].capacity, 8)
 
 if __name__ == '__main__':
     unittest.main()

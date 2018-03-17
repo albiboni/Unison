@@ -1,6 +1,6 @@
 from collections import defaultdict, deque
 import math
-
+import copy
 
 class Node(object):
     def __init__(self, identifier: str, production: float, dependencies: dict):
@@ -23,8 +23,8 @@ class Source(Node):
 
 
 class Sink(Node):
-    def __init__(self, identifier):
-        super().__init__(identifier, 0, {})
+    def __init__(self, identifier, dependency):
+        super().__init__(identifier, 0, dependency)
 
 
 class Edge(object):
@@ -61,12 +61,15 @@ class Edge(object):
 
 
 class Graph(object):
-    def __init__(self, edges, directed=True):
+    def __init__(self, edges, directed=True, subgraph=True):
         self.nodes = {}
         self._sources = {}
+        self._sink = None
         self.graph = defaultdict(dict)
         self.is_directed = directed
         self._add_connections(edges)
+        if not subgraph:
+            self.update_dependencies()
 
     def get_parent_nodes(self, node_id):
         if node_id in [node.id for node in self.sources]:
@@ -79,33 +82,34 @@ class Graph(object):
                     parent_node_ids.append(node_1_id)
         return parent_node_ids
 
-    def update_dependencies(self, node_id):
-        print("Node id ", node_id)
-        if self.is_source(node_id):
-            return 0
-
+    def update_dependencies(self):
         def find_dependency_const(node):
-            print(node)
             if self.is_source(node):
-                return 1
+                return {node: 1}
             else:
-                dependency = list(self.nodes[node].dependencies.keys())[0]
-                print("dependency ", dependency)
-                return list(self.nodes[node].dependencies.values())[0] * \
-                       find_dependency_const(dependency)
+                dependencies = list(self.nodes[node].dependencies.keys())
+                for parent in dependencies:
+                    factor_parent = self.nodes[node].dependencies[parent]
+                    updated_dict = find_dependency_const(parent)
+                    for key in updated_dict:
+                        self.nodes[node].dependencies[key] = factor_parent * updated_dict[key]
 
-        for dependency in self.nodes[node_id].dependencies:
-            self.nodes[node_id].dependencies[dependency] = find_dependency_const(node_id)
+                    if not self.is_source(parent):
+                        del self.nodes[node].dependencies[parent]
+
+                return self.nodes[node].dependencies
+        find_dependency_const(self.sink.id)
 
     def init_edges_capacity(self):
+
         for node_1_id, inner_dict in list(self.graph.items()):
             if not self.is_source(node_1_id) and not self.is_sink(node_1_id):
                 for node_2_id, edge in list(inner_dict.items()):
                     edge = self.graph[node_1_id][node_2_id]
                     try:
-                        self.update_dependencies(node_1_id)
-                        edge._capacity = min([self.nodes[node_1_id].production / dependency
-                                             for dependency in self.nodes[node_1_id].dependencies.values()])
+                        edge._capacity = self.nodes[node_1_id].production / list(self.nodes[
+                            node_1_id].dependencies.values())[0]
+
                     except AttributeError as e:
                         raise AttributeError("Trying to set capacity of source edge, they are set to infinity")
 
@@ -126,6 +130,11 @@ class Graph(object):
     def sources(self):
         self._sources = list(filter(lambda x: isinstance(x, Source), self.nodes.values()))
         return self._sources
+
+    @property
+    def sink(self):
+        self._sink = list(filter(lambda x: isinstance(x, Sink), self.nodes.values()))[0]
+        return self._sink
 
     def __getitem__(self, item):
         return self.graph[item]
@@ -180,18 +189,6 @@ class Graph(object):
             path = get_path(end_node, path)
         return path
 
-    def get_subgraphs(self):
-        graphs = []
-        for source in self.sources:
-            self.bfs(source)
-            nodes_subgraph = list(filter(lambda x: x.distance < math.inf, self.nodes.values()))
-            edges_subgraph = list(filter(lambda x: x.node_1 in nodes_subgraph and
-                                                   x.node_2 in nodes_subgraph,
-                                self.edges()))
-            graphs.append(Graph(edges_subgraph))
-
-        return graphs
-
     def residual_graph(self):
         edges = []
         for node_1, inner_dict in list(self.graph.items()):
@@ -201,18 +198,34 @@ class Graph(object):
                                       capacity=edge.capacity - edge.flow))
                 elif edge.capacity == edge.flow:
                     edges.append(Edge(self.nodes[node_2], self.nodes[node_1], capacity=edge.flow))
+        return Graph(edges, directed=True, subgraph=True)
 
-        return Graph(edges, directed=True)
+    def get_subgraphs(self):
+        graphs = []
+        for source in self.sources:
+            self.bfs(source)
+            nodes_subgraph = copy.deepcopy(list(filter(lambda x: x.distance < math.inf,
+                                               self.nodes.values())))
+            edges_subgraph = copy.deepcopy(list(filter(lambda x: x.node_1 in nodes_subgraph and
+                                                   x.node_2 in nodes_subgraph,
+                                self.edges())))
+            self.remove_unwanted_dependencies(edges_subgraph,
+                                              list(map(lambda x: x.id, nodes_subgraph)))
+            graphs.append(Graph(edges_subgraph, subgraph=True))
 
+        return graphs
 
+    def remove_unwanted_dependencies(self, edges, nodes):
+        for edge in edges:
+            dependencies_node_1 = copy.copy(edge.node_1.dependencies)
+            for dependency in dependencies_node_1:
+                if dependency not in nodes:
+                    del edge.node_1.dependencies[dependency]
 
-
-
-
-
-
-
-
+            dependencies_node_2 = copy.copy(edge.node_1.dependencies)
+            for dependency in dependencies_node_2:
+                if dependency not in nodes:
+                    del edge.node_2.dependencies[dependency]
 
 
 
