@@ -9,7 +9,7 @@ var node_name = document.getElementById("node_name");
 var node_min_or = document.getElementById("node_min_or");
 var node_max_or = document.getElementById("node_max_or");
 var node_op = document.getElementById("node_op");
-
+var node_sp = document.getElementById("is_subproduct");
 
 var link_delay = document.getElementById("link_delay");
 
@@ -26,6 +26,7 @@ export function update_item_values(selected_item) {
     selected_item.min = node_min_or.value;
     selected_item.max = node_max_or.value;
     selected_item.output_product = node_op.value;
+    selected_item.is_subproduct = node_sp.checked;
   } else if (selected_item instanceof link) {
     selected_item.delay = link_delay.value;
   } else {
@@ -41,11 +42,17 @@ function update_fields(selected_item) {
     node_min_or.value = selected_item.min;
     node_max_or.value = selected_item.max;
     node_op.value = selected_item.output_product;
+    node_sp.checked = selected_item.is_subproduct;
   } else if (selected_item instanceof link) {
     link_delay.value = selected_item.delay;
   } else {
   }
-}
+  if (node_sp.checked == false) {
+    $(".c_input").attr("disabled", false);
+  } else {
+    $(".c_input").attr("disabled", true);
+    document.getElementById("node_name").disabled = false;}
+  }
 
 
 function update_visibility(selected_item) {

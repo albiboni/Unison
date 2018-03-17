@@ -3,11 +3,20 @@
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="js/jquery-1.6.1.min.js"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
   <title>Electron Boilerplate</title>
 </head>
 <body>
 
-  <div id="app" class="container-fluid">
+  <div id="app">
+   <div class="blur">
+        <div class="gantt" id="timeline"></div>
+   </div>
+  <div class="container-fluid">
+
+
     <div class="row">
 
       <div class="col-9 canvas_container">
@@ -16,12 +25,24 @@
 
       <div class="col-3 settings_container">
         <div class="container">
-          <div class="row" id="empty_settings">
-            <h3>No graph created.</h3>
+
+          
+          <div class="row">
+            <h1 class="mt-5">Tools</h1>
+            <button type="button" class="btn btn-success btn-lg btn-block create_node_button ">Create Node</button>
+            <hr />
           </div>
 
-      
+          <div class="row" id="empty_settings">
+            <h1 class="mt-5">No Item Selected</h1>
+            <hr />
+          </div>
+
+
           <div class="row" id="node_settings" style="display:none">
+            <h1 class="mt-5">Node Settings</h1>
+            <hr />
+
             <label>Name</label>
             <div class="input-group-sm mb-3">
               <input id="node_name" type="text" class="form-control c_input" placeholder="Machine 1" aria-label="Machine 1" aria-describedby="basic-addon1">
@@ -41,7 +62,17 @@
             <div class="input-group-sm mb-3">
               <input id="node_op" type="text" class="form-control c_input" placeholder="Product 1" aria-label="Product 1" aria-describedby="basic-addon1">
             </div>
-          </div>
+
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="is_subproduct">
+              <label class="form-check-label" for="is_subproduct">
+                Is subproduct?
+              </label>
+            </div>
+
+              <button type="button" class="btn btn-primary btn-lg btn-block update_node_button ">Update Node</button>
+              <button type="button" class="btn btn-danger btn-lg btn-block delete_node_button">Delete Node</button>
+            </div>
             <!--min_output_rate
   max_output_rate
   output_rate
@@ -49,17 +80,34 @@
   output_product-->
 
 
-          <div class="row" id="link_settings" style="display:none">
-            <label>Delay</label>
-            <div class="input-group-sm mb-3">
-              <input id="link_delay" type="text" class="form-control c_input" placeholder="10" aria-label="10" aria-describedby="basic-addon1">
+            <div class="row" id="link_settings" style="display:none">
+              <h1 class="mt-5">Link Settings</h1>
+              <hr />
+
+              <label>Delay</label>
+              <div class="input-group-sm mb-3">
+                <input id="link_delay" type="text" class="form-control c_input" placeholder="10" aria-label="10" aria-describedby="basic-addon1">
+              </div>
+              <button type="button" class="btn btn-primary btn-lg btn-block update_link_button">Update Link</button>
+              <button type="button" class="btn btn-danger btn-lg btn-block delete_link_button">Delete Link</button>
+            </div>
+            <hr />
+            <div class="row">
+              <h1 class="mt-5">Processing</h1>
+              <button type="button" class="btn btn-primary btn-lg btn-block optimize_graph">Optimize Graph</button>
+              <button type="button" class="btn btn-primary btn-lg btn-block  gannt">Show Gannt Chart</button>
+
+
+              <hr />
             </div>
           </div>
-          </div>
+
+
 
         </div>
     </div>
   </div>
+    </div>
 
   <script src="app.js"></script>
 </body>

@@ -1,15 +1,21 @@
 
 export class node {
-  constructor(name, min, max) {
+  constructor(x, y, name, min, max, op) {
+    this.x = x;
+    this.y = y;
     this.name = name;
     this.min = min;
     this.max = max;
-    this.links = [];
+    this.selected = false;
+    this.output_product = op;
+    this.is_subproduct = false;
   }
 
 
-  add_link(link) {
-    this.links.push(link);
+  set_position(x, y) {
+    this.x = x;
+    this.y = y;
   }
+  
 
 }
