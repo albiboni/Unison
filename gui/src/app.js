@@ -8,9 +8,10 @@ import "./helpers/external_links.js";
 // Everything below is just to show you how it works. You can delete all of it.
 // ----------------------------------------------------------------------------
 
-var node_list = []
-var links = [];
+var node_list = [], link_list = [], product_list = [], machines_list, external_suppliers_list, graph_list;
+var product_json;
 var selected_item = null;
+var data_json = {product:{}, machines:{}, external_suppliers:{}, graph:{}};
 var node_width = { x: 170, y: 100 };
 
 var strength = 1.0;
@@ -31,18 +32,14 @@ import { node } from "./node";
 import { link } from "./link";
 import { update_settings, update_item_values } from "./settings_menu";
 
+import { product } from "./product";
+import { machines} from "./machines";
+import { external_suppliers} from "./external_suppliers";
+import { grapth } from "./graphs";
 
 var canvas = document.getElementById("canvas");
 canvas.addEventListener('click', function(e) {
   update_settings(selected_item);
-
-  //let bound = canvas.getBoundingClientRect();
-
-  //let x = e.clientX - bound.left - canvas.clientLeft - node_width.x/2;
-  //let y = e.clientY - bound.top - canvas.clientTop - node_width.y/2;
-
-  //node_list.push(new node(x, y, 'teste', 100, 1));
-
 });
 
 canvas.addEventListener('mousewheel', function (e) {
@@ -69,7 +66,7 @@ document.getElementById('is_subproduct').addEventListener('change', function (e)
 });
 
 document.querySelector(".create_node_button").addEventListener('click', function (e) {
-  node_list.push(new node(300, 300, '', 0, 100, ''));
+  node_list.push(new node(300, 300, '', 0, 100, true, 0, ''));
 });
 
 document.querySelector(".update_node_button").addEventListener('click', function (e) {
@@ -115,10 +112,8 @@ function show_gannt_chart() {
       ['Adams', new Date(1797, 2, 4), new Date(1801, 2, 4)],
       ['Jefferson', new Date(1801, 2, 4), new Date(1809, 2, 4)]]);
 
-    var options = {
-      width: 800
-    }
-    chart.draw(dataTable, options);
+
+    chart.draw(dataTable);
   }
 }
 
@@ -127,7 +122,7 @@ function show_gannt_chart() {
 document.addEventListener('keydown', function (event) {
 key = event.key; // "a", "1", "Shift", etc.
 if (key == ';') {
-  node_list.push(new node(100, 100, '', 0, 100, ''));
+  node_list.push(new node(300, 300, '', 0, 100, true, 0, ''));
 } else if (key == '/') {
   delete_selected_item();
 } else if (key == 'Escape') {
@@ -141,12 +136,12 @@ pressed = true;
 
 function delete_selected_item() {
   if (selected_item instanceof link) {
-    links.splice(links.indexOf(selected_item), 1);
+    link_list.splice(link_list.indexOf(selected_item), 1);
     
   } else if (selected_item instanceof node) {
-    for (var index = 0; index < links.length; index++) {
-      if (links[index].connected_to === selected_item || links[index].connected_from === selected_item) {
-        links.splice(index, 1);
+    for (var index = 0; index < link_list.length; index++) {
+      if (link_list[index].connected_to === selected_item || link_list[index].connected_from === selected_item) {
+        link_list.splice(index, 1);
         index--;
       }
     }
@@ -173,7 +168,7 @@ canvas.addEventListener("mousedown", function (e) {
     if ((x >= node_list[index].x) && x <= node_list[index].x + node_width.x && y >= node_list[index].y && y <= node_list[index].y + node_width.y) {
 
       if (key == 'Control' && selected_item !== node_list[index] && pressed == true) {
-        links.push(new link(selected_item, node_list[index]));
+        link_list.push(new link(selected_item, node_list[index], 0));
       }
 
       
@@ -193,11 +188,11 @@ canvas.addEventListener("mousedown", function (e) {
     }
   }
 
-  for (var index = links.length - 1; index >= 0; index--) {
-    var tox = links[index].connected_to.x + node_width.x/2;
-    var toy = links[index].connected_to.y + node_width.y/2;
-    var fromx = links[index].connected_from.x + node_width.x / 2;
-    var fromy = links[index].connected_from.y + node_width.y / 2;
+  for (var index = link_list.length - 1; index >= 0; index--) {
+    var tox = link_list[index].connected_to.x + node_width.x/2;
+    var toy = link_list[index].connected_to.y + node_width.y/2;
+    var fromx = link_list[index].connected_from.x + node_width.x / 2;
+    var fromy = link_list[index].connected_from.y + node_width.y / 2;
 
     var xc = x - (tox + fromx) / 2;
     var yc = y - (toy + fromy) / 2;
@@ -217,7 +212,7 @@ canvas.addEventListener("mousedown", function (e) {
       try {
         selected_item.selected = false;
       } catch (err) { }
-      selected_item = links[index]
+      selected_item = link_list[index]
       selected_item.selected = true;
       return;
 
@@ -309,8 +304,8 @@ function render_nodes() {
     if (node_list[index].is_subproduct != true) {
       context.fillStyle = "#000000"
       context.font = "13px Arial";
-      context.fillText("Max: " + node_list[index].max, node_list[index].x + 2, node_list[index].y + 13);
-      context.fillText("Min: " + node_list[index].min, node_list[index].x + 2, node_list[index].y + node_width.y - 2);
+      context.fillText("Max: " + node_list[index].max_output_rate, node_list[index].x + 2, node_list[index].y + 13);
+      context.fillText("Min: " + node_list[index].min_output_rate, node_list[index].x + 2, node_list[index].y + node_width.y - 2);
     }
     
       
@@ -324,13 +319,13 @@ function render_links() {
   context.fillStyle = "#000000"
   context.font = "20px Arial";
   context.strokeStyle = 'black';
-  for (var index = 0; index < links.length; index++) {
-    if (links[index].selected == true) {
+  for (var index = 0; index < link_list.length; index++) {
+    if (link_list[index].selected == true) {
       context.strokeStyle = 'red';
     } else {
       context.strokeStyle = 'black';
     }
-    canvas_arrow(context, links[index].connected_from, links[index].connected_to);
+    canvas_arrow(context, link_list[index].connected_from, link_list[index].connected_to);
     context.stroke();
 
 

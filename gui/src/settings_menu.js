@@ -23,8 +23,8 @@ export function update_settings(selected_item) {
 export function update_item_values(selected_item) {
   if (selected_item instanceof node) {
     selected_item.name = node_name.value;
-    selected_item.min = node_min_or.value;
-    selected_item.max = node_max_or.value;
+    selected_item.min_output_rate = node_min_or.value;
+    selected_item.max_output_rate = node_max_or.value;
     selected_item.output_product = node_op.value;
     selected_item.is_subproduct = node_sp.checked;
   } else if (selected_item instanceof link) {
@@ -39,8 +39,8 @@ export function update_item_values(selected_item) {
 function update_fields(selected_item) {
   if (selected_item instanceof node) {
     node_name.value = selected_item.name;
-    node_min_or.value = selected_item.min;
-    node_max_or.value = selected_item.max;
+    node_min_or.value = selected_item.min_output_rate;
+    node_max_or.value = selected_item.max_output_rate;
     node_op.value = selected_item.output_product;
     node_sp.checked = selected_item.is_subproduct;
   } else if (selected_item instanceof link) {
