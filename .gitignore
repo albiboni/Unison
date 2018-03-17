@@ -6,9 +6,9 @@
 #*.so
 
 # IDE files
-#*.idea
-#*.idea*
-#.idea/
+*.idea
+*.idea*
+.idea/
 
 # Distribution / packaging
 #bin/
