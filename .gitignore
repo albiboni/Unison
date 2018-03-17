@@ -64,3 +64,19 @@ docs/_build/
 
 # Mac files
 .DS_Store
+
+
+
+/gui/node_modules
+/gui/.DS_Store
+/gui/Thumbs.db
+/gui/*.log
+
+/gui/dist
+/gui/temp
+
+# ignore everything in 'app' folder what had been generated from 'src' folder
+/gui/app/app.js
+/gui/app/background.js
+/gui/app/**/*.map
+/.vs
