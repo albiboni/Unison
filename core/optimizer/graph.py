@@ -67,6 +67,7 @@ class Graph(object):
         self._sink = None
         self.graph = defaultdict(dict)
         self.is_directed = directed
+        self.capacity = [edge.capacity for edge in edges ]
         self._add_connections(edges)
         if not subgraph:
             self.update_dependencies()
@@ -125,6 +126,13 @@ class Graph(object):
             for node_2_id, edge in list(inner_dict.items()):
                 edges.append(edge)
         return edges
+
+    def flow(self):
+        flow = []
+        for node_1_id, inner_dict in list(self.graph.items()):
+            for node_2_id, edge in list(inner_dict.items()):
+                flow.append(edge.flow)
+        return flow
 
     @property
     def sources(self):
