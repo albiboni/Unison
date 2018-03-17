@@ -64,34 +64,49 @@
             "output_rate": 0.0,
             "output_product": "water"
         },
-        "Supplier_of_flour": {
-            "min_output_rate": 0.0,
-            "max_output_rate": 10000000000000.0,
-            "output_rate": 0.0,
-            "output_product": "flour"
-        },
         "Supplier_of_cream": {
             "min_output_rate": 0.0,
             "max_output_rate": 10000000000000.0,
             "output_rate": 0.0,
             "output_product": "cream"
+        },
+        "Supplier_of_flour": {
+            "min_output_rate": 0.0,
+            "max_output_rate": 10000000000000.0,
+            "output_rate": 0.0,
+            "output_product": "flour"
         }
     },
     "graph": [
         [
             "Pie maker",
             "Dough maker",
-            "Filling maker"
+            3.2
+        ],
+        [
+            "Pie maker",
+            "Filling maker",
+            1.2
         ],
         [
             "Dough maker",
             "Supplier_of_flour",
-            "Supplier_of_water"
+            0.0
+        ],
+        [
+            "Dough maker",
+            "Supplier_of_water",
+            0.0
         ],
         [
             "Filling maker",
             "Supplier_of_cream",
-            "Supplier_of_flour"
+            0.0
+        ],
+        [
+            "Filling maker",
+            "Supplier_of_flour",
+            0.0
         ]
     ]
 }
