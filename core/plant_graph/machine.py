@@ -4,7 +4,7 @@ Created by Alejandro Daniel Noel
 from typing import List
 
 from core.plant_graph.ExternalSupplier import ExternalSupplier
-from core.plant_graph.Product import Product
+from core.plant_graph.product import Product
 
 
 class Machine:

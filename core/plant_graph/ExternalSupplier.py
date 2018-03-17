@@ -4,7 +4,7 @@ Created by Alejandro Daniel Noel
 from typing import List
 from weakref import WeakSet
 
-from core.plant_graph.Product import Product
+from core.plant_graph.product import Product
 
 
 class ExternalSupplier:

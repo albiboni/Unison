@@ -5,8 +5,8 @@ Created by Alejandro Daniel Noel
 import unittest
 import json
 
-from core.plant_graph.Machine import Machine
-from core.plant_graph.Product import Product
+from core.plant_graph.machine import Machine
+from core.plant_graph.product import Product
 from core.plant_graph.ExternalSupplier import ExternalSupplier
 from core.plant_graph.json_parser import write_json, read_json
 
@@ -38,6 +38,7 @@ class TestGraph(unittest.TestCase):
         self.output_machine = Machine(name="Pie maker",
                                       min_output_rate=1, max_output_rate=3, output_product=self.pie,
                                       suppliers=[self.dough_maker, self.filling_maker], delays=[3.2, 1.2])
+        print("graph :", self.output_machine.get_graph())
 
     def test_auto_assigns_suppliers(self):
         flour_supplier = None
