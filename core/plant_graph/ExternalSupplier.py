@@ -84,3 +84,6 @@ class ExternalSupplier:
         else:
             self.batch_time = self.batch_size / required_output_rate
             return True
+
+    def search_machine_by_name(self, name):
+        return None

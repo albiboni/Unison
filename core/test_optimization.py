@@ -28,7 +28,8 @@ output_machine = Machine(name="Pie maker", min_batch_time=10, max_batch_time=300
                          output_product=pie,
                          suppliers=[dough_maker, dough_maker2, filling_maker1, filling_maker2, filling_maker3], delays=[22.3, 20.1,  13.2, 11.1, 15.3])
 
-maximum_output = ale_optimizer.maximize_output(output_machine)
+# maximum_output = ale_optimizer.maximize_output(output_machine)
+maximum_output = ale_optimizer.optimize_topography(output_machine, 1.2)
 # output_machine.set_supplier_rates(0.2)
 write_json(output_machine, "Optimized_plant.json")
 print("\nMaximum production is 1 pie every {:.2f} seconds".format(1 / maximum_output))

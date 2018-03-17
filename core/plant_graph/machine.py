@@ -73,6 +73,10 @@ class Machine:
     def suppliers(self):
         return self._suppliers
 
+    @property
+    def delays(self):
+        return self._delays
+
     def count_suppliers_of_product(self, product):
         count = 0
         for supplier in self.suppliers:
@@ -136,3 +140,10 @@ class Machine:
             if not successful:
                 return False
         return True
+
+    def search_machine_by_name(self, name):
+        if self.name == name:
+            return self
+        else:
+            for supplier in self.suppliers:
+                return supplier.search_machine_by_name(name)
