@@ -2,9 +2,10 @@
 Created by Alejandro Daniel Noel 
 """
 from typing import List
+from math import ceil
 
 from core.plant_graph.ExternalSupplier import ExternalSupplier
-from core.plant_graph.Product import Product
+from core.plant_graph.product import Product
 
 
 class Machine:
@@ -72,6 +73,10 @@ class Machine:
     def suppliers(self):
         return self._suppliers
 
+    @property
+    def delays(self):
+        return self._delays
+
     def count_suppliers_of_product(self, product):
         count = 0
         for supplier in self.suppliers:
@@ -112,7 +117,7 @@ class Machine:
 
     def get_scheduling(self, end_time, output_units_required):
         # Row data: [process_name, start_time, end_time, performance_percent]
-        duration = (int(output_units_required / self.batch_size) + 1) * self.batch_time
+        duration = ceil(output_units_required / self.batch_size) * self.batch_time
         scheduling = [[self.name,
                        end_time - duration,
                        end_time,
@@ -135,3 +140,10 @@ class Machine:
             if not successful:
                 return False
         return True
+
+    def search_machine_by_name(self, name):
+        if self.name == name:
+            return self
+        else:
+            for supplier in self.suppliers:
+                return supplier.search_machine_by_name(name)

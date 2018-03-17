@@ -4,8 +4,8 @@ Created by Alejandro Daniel Noel
 import json
 
 from core.plant_graph.ExternalSupplier import ExternalSupplier
-from core.plant_graph.Machine import Machine
-from core.plant_graph.Product import Product
+from core.plant_graph.machine import Machine
+from core.plant_graph.product import Product
 from core.plant_graph.time_schedule import create_time_schedule
 
 

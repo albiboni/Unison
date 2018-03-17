@@ -4,7 +4,7 @@ Created by Alejandro Daniel Noel
 from typing import List
 from weakref import WeakSet
 
-from core.plant_graph.Product import Product
+from core.plant_graph.product import Product
 
 
 class ExternalSupplier:
@@ -84,3 +84,6 @@ class ExternalSupplier:
         else:
             self.batch_time = self.batch_size / required_output_rate
             return True
+
+    def search_machine_by_name(self, name):
+        return None
