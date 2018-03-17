@@ -10,24 +10,12 @@ def home():
     return render_template('home.html')
 
 
-@app.route('/export', methods=["GET", "POST"])
-def export_data():
-    with open("test.json", "r") as f:  # TODO: Change that
-        json = " ".join(f.readlines())
-    return render_template('export_data.html', json=json)
-
-
-@app.route('/import', methods=["GET", "POST"])
-def import_data():
-    return render_template('import_data.html')
-
-
 @app.route('/run_python', methods=["GET", "POST"])
 def run_python():
-    json = str(request.args.get('json') or None)
+    json = request.get_json()
     if json is not None:
-        print(json)
-        return render_template('export_data.html', json=json)
+        print('DO PYTHON')
+    return render_template('export_data.html')
 
 
 if __name__ == '__main__':
