@@ -58,3 +58,6 @@ class ExternalSupplier:
     @staticmethod
     def get_graph():
         return []
+
+    def get_scheduling(self, end_time, output_units_required):
+        return [[self.name, 0.0, end_time, '', 100 * self.output_rate / self.max_output_rate]]

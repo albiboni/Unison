@@ -56,12 +56,12 @@ class Machine:
                 self.add_supplier(new_supplier, 0.0)
 
     @property
-    def min_performance(self):
+    def min_output_rate(self):
         return self._min_output_rate if self.is_on else 0.0
 
     @property
-    def max_performance(self):
-        return self._min_output_rate if self.is_on else 0.0
+    def max_output_rate(self):
+        return self._max_output_rate if self.is_on else 0.0
 
     @property
     def output_rate(self):
@@ -71,12 +71,12 @@ class Machine:
     def output_rate(self, value):
         self._output_rate = value
 
-    @min_performance.setter
-    def min_performance(self, value):
+    @min_output_rate.setter
+    def min_output_rate(self, value):
         self._min_output_rate = value
 
-    @max_performance.setter
-    def max_performance(self, value):
+    @max_output_rate.setter
+    def max_output_rate(self, value):
         self._max_output_rate = value
 
     @property
@@ -90,6 +90,9 @@ class Machine:
         self._suppliers.append(supplier)
         self._delays.append(delay)
         supplier.add_next_machine(self)
+
+    def delay_for_supplier(self, supplier):
+        return self._delays[self._suppliers.index(supplier)]
 
     def to_dict(self):
         the_dict = {}
@@ -110,3 +113,16 @@ class Machine:
             graph += supplier.get_graph()
         return graph
 
+    def get_scheduling(self, end_time, output_units_required):
+        # Row data: [process_name, duration, end_time, dependencies, performance_percent]
+        duration = output_units_required / self.output_rate
+        scheduling = [[self.name,
+                       output_units_required / self.output_rate,
+                       end_time,
+                       ', '.join([supplier.name for supplier in self.suppliers]),
+                       100 * self.output_rate / self.max_output_rate]]
+        for supplier in self.suppliers:
+            scheduling += supplier.get_scheduling(end_time=end_time - duration - self.delay_for_supplier(supplier),
+                                                  output_units_required=output_units_required *
+                                                                        self.output_product.sub_products_quantities[supplier.output_product])
+        return scheduling

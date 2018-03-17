@@ -4,15 +4,17 @@ Created by Alejandro Daniel Noel
 import json
 
 from core.plant_graph.ExternalSupplier import ExternalSupplier
-from core.plant_graph.machine import Machine
-from core.plant_graph.product import Product
+from core.plant_graph.Machine import Machine
+from core.plant_graph.Product import Product
+from core.plant_graph.time_schedule import create_time_schedule
 
 
 def write_json(output_machine: Machine, filename):
     the_dict = {"products": output_machine.output_product.to_dict(),
                 "machines": output_machine.to_dict(),
                 "external_suppliers": ExternalSupplier.to_dict(),
-                "graph": output_machine.get_graph()}
+                "graph": output_machine.get_graph(),
+                "schedule": create_time_schedule(output_machine)}
     json.dump(the_dict, open(filename, 'w'), indent=4)
     return the_dict
 
