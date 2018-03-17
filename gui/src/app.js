@@ -8,28 +8,25 @@ import "./helpers/external_links.js";
 // Everything below is just to show you how it works. You can delete all of it.
 // ----------------------------------------------------------------------------
 
-import { remote } from "electron";
-import jetpack from "fs-jetpack";
-import { greet } from "./hello_world/hello_world";
-import env from "env";
+var node_list, links;
+var selected_item = null;
 
-const app = remote.app;
-const appDir = jetpack.cwd(app.getAppPath());
 
-// Holy crap! This is browser window with HTML and stuff, but I can read
-// files from disk like it's node.js! Welcome to Electron world :)
-const manifest = appDir.read("package.json", "json");
+import { node } from "./node";
+import { link } from "./link";
+import { update_settings, update_item_values } from "./settings_menu";
 
-const osMap = {
-  win32: "Windows",
-  darwin: "macOS",
-  linux: "Linux"
-};
 
-document.querySelector("#app").style.display = "block";
-document.querySelector("#greet").innerHTML = greet();
-document.querySelector("#os").innerHTML = osMap[process.platform];
-document.querySelector("#author").innerHTML = manifest.author;
-document.querySelector("#env").innerHTML = env.name;
-document.querySelector("#electron-version").innerHTML =
-  process.versions.electron;
+var canvas = document.getElementById("canvas");
+canvas.addEventListener('click', function(e) {
+  update_settings(selected_item);
+});
+
+document.querySelector(".c_input").addEventListener("input", function (e) {
+  update_item_values(selected_item);
+});
+
+canvas.style.height = window.innerHeight;
+
+
+
