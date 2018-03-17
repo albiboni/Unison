@@ -61,15 +61,13 @@ class Edge(object):
 
 
 class Graph(object):
-    def __init__(self, edges, directed=True, residual=False):
+    def __init__(self, edges, directed=True):
         self.nodes = {}
         self._sources = {}
         self.graph = defaultdict(dict)
         self.is_directed = directed
         self.capacity = [edge.capacity for edge in edges ]
         self._add_connections(edges)
-        if not residual:
-            self.init_edges_capacity()
 
     def get_parent_nodes(self, node_id):
         if node_id in [node.id for node in self.sources]:
@@ -82,12 +80,31 @@ class Graph(object):
                     parent_node_ids.append(node_1_id)
         return parent_node_ids
 
+    def update_dependencies(self, node_id):
+        print("Node id ", node_id)
+        if self.is_source(node_id):
+            return 0
+
+        def find_dependency_const(node):
+            print(node)
+            if self.is_source(node):
+                return 1
+            else:
+                dependency = list(self.nodes[node].dependencies.keys())[0]
+                print("dependency ", dependency)
+                return list(self.nodes[node].dependencies.values())[0] * \
+                       find_dependency_const(dependency)
+
+        for dependency in self.nodes[node_id].dependencies:
+            self.nodes[node_id].dependencies[dependency] = find_dependency_const(node_id)
+
     def init_edges_capacity(self):
         for node_1_id, inner_dict in list(self.graph.items()):
             if not self.is_source(node_1_id) and not self.is_sink(node_1_id):
                 for node_2_id, edge in list(inner_dict.items()):
                     edge = self.graph[node_1_id][node_2_id]
                     try:
+                        self.update_dependencies(node_1_id)
                         edge._capacity = min([self.nodes[node_1_id].production / dependency
                                              for dependency in self.nodes[node_1_id].dependencies.values()])
                     except AttributeError as e:
@@ -193,7 +210,7 @@ class Graph(object):
                 elif edge.capacity == edge.flow:
                     edges.append(Edge(self.nodes[node_2], self.nodes[node_1], capacity=edge.flow))
 
-        return Graph(edges, directed=True, residual=True)
+        return Graph(edges, directed=True)
 
 
 

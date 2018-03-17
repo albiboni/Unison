@@ -1,4 +1,5 @@
 import unittest
+import math
 from core.optimizer.graph import Graph, Edge, Node, Sink, Source
 
 
@@ -30,6 +31,26 @@ class TestGraph(unittest.TestCase):
                             self.edge_bf, self.edge_fg, self.edge_ge, self.edge_dh,
                             self.edge_he, self.sink_edge])
 
+        self.node2_a = Source("a")
+        self.node2_b = Source("b")
+        self.node2_c = Node("c", 28, dependencies={"a": 4})
+        self.node2_d = Node("d", 16, dependencies={"b": 2})
+        self.node2_e = Node("e", 12, dependencies={"c": 3})
+        self.node2_f = Node("f", 8, dependencies={"d": 0.5})
+        self.node2_g = Node("g", 4, dependencies={"e": 1.5, "f": 2})
+        self.sink2 = Sink("t")
+
+        self.edge2_ac = Edge(self.node2_a, self.node2_c)
+        self.edge2_bd = Edge(self.node2_b, self.node2_d)
+        self.edge2_ce = Edge(self.node2_c, self.node2_e)
+        self.edge2_df = Edge(self.node2_d, self.node2_f)
+        self.edge2_eg = Edge(self.node2_e, self.node2_g)
+        self.edge2_fg = Edge(self.node2_f, self.node2_g)
+        self.edge2_gt = Edge(self.node2_g, self.sink2)
+
+        self.graph2 = Graph([self.edge2_ac, self.edge2_bd, self.edge2_df, self.edge2_ce,
+                          self.edge2_fg, self.edge2_eg, self.edge2_gt])
+
     def test_edges(self):
         self.assertEqual(self.graph['d']['e'], self.edge_de)
         self.assertEqual(self.graph['b']['d'], self.edge_bd)
@@ -56,6 +77,17 @@ class TestGraph(unittest.TestCase):
                       self.node_h, self.node_sink}))
         self.assertEqual(set(subgraphs[0].nodes), subgraph_0)
         self.assertEqual(set(subgraphs[1].nodes), subgraph_1)
+
+    def test_capacities(self):
+        subgraph_0, subgraph_1 = self.graph2.get_subgraphs()
+        subgraph_0.init_edges_capacity()
+        subgraph_1.init_edges_capacity()
+        self.assertEqual(self.subgraph_0['a']['c'].capacity, math.inf)
+        self.assertEqual(self.subgraph_1['b']['d'].capacity, math.inf)
+        self.assertEqual(self.subgraph_0['c']['e'].capacity, 7)
+        self.assertEqual(self.subgraph_1['d']['f'].capacity, 8)
+        self.assertEqual(self.subgraph_0['e']['g'].capacity, 1)
+        self.assertEqual(self.subgraph_1['f']['g'].capacity, 8)
 
 
 if __name__ == '__main__':
