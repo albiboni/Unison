@@ -92,6 +92,7 @@ document.querySelector(".delete_link_button").addEventListener('click', function
 document.querySelector(".optimize_graph").addEventListener('click', function (e) {
   populate_product_list();
   send_graph();
+  console.log(node_list);
 });
 
 document.querySelector(".gannt").addEventListener('click', function (e) {
@@ -137,12 +138,13 @@ function send_graph() {
   var json_string = ExportJSON(node_list, link_list, product_list);
   $.ajax({
     type: "POST",
-    url: "http://127.0.0.1:12348",
+    url: "http://127.0.0.1:12348/import",
     data: json_string,
     contentType: "application/json",
     success: function (response) {
-      response_json = $.parseJSON(response);
-      node_list = ImportJSON_response(json_string, node_list);
+      // response_json = $.parseJSON(response);
+      node_list = ImportJSON_response(response, node_list);
+      console.log(response);
     }
   });
 }
