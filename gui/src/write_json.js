@@ -15,14 +15,14 @@ export function ExportJSON(node_list, link_list, product_list) {
   }
 
   for (var idx in link_list) {
-    export_graphs.push([link_list[idx].connected_from.name,
+    export_graphs.push(([link_list[idx].is_subproduct) ? "supplier_" + link_list[idx].connected_from.name : link_list[idx].connected_from.name,
                         link_list[idx].connected_to.name,
                         link_list[idx].delay]);
   }
 
   for (var idx in node_list) {
     if (node_list[idx].is_subproduct == true) {
-      export_external_suppliers["Supplier_of_" + node_list[idx].name] = {
+      export_external_suppliers["supplier_of_" + node_list[idx].name] = {
         "min_output_rate": node_list[idx].min_output_rate,
         "max_output_rate": node_list[idx].max_output_rate,
         "output_rate": node_list[idx].output_rate,
