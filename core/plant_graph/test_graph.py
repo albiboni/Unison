@@ -2,12 +2,12 @@
 Created by Alejandro Daniel Noel
 """
 
-import unittest
 import json
+import unittest
 
+from core.plant_graph.ExternalSupplier import ExternalSupplier
 from core.plant_graph.Machine import Machine
 from core.plant_graph.Product import Product
-from core.plant_graph.ExternalSupplier import ExternalSupplier
 from core.plant_graph.json_parser import write_json, read_json
 
 
@@ -19,6 +19,7 @@ def dicts_are_equal(dict1, dict2):
             return sorted(ordered_recursive(x) for x in obj)
         else:
             return str(obj)
+
     return ordered_recursive(dict1) == ordered_recursive(dict2)
 
 
@@ -31,24 +32,24 @@ class TestGraph(unittest.TestCase):
         self.dough = Product(name="dough", units='kg', sub_products_quantities={self.flour: 0.3, self.water: 0.5})
         self.filling = Product(name="filling", units='liter', sub_products_quantities={self.cream: 0.5, self.flour: 0.1})
         self.pie = Product(name="pie", units='unit', sub_products_quantities={self.dough: 0.4, self.filling: 0.6})
-        self.dough_maker = Machine(name="Dough maker", min_output_rate=0.1, max_output_rate=3.0,
+        self.dough_maker = Machine(name="Dough maker", min_batch_time=200, max_batch_time=1000, batch_time=500, batch_size=50,
                                    output_product=self.dough)
-        self.filling_maker = Machine(name="Filling maker", min_output_rate=0.1, max_output_rate=4.0,
+        self.filling_maker = Machine(name="Filling maker", min_batch_time=100, max_batch_time=500.0, batch_time=150, batch_size=20,
                                      output_product=self.filling)
-        self.output_machine = Machine(name="Pie maker",
-                                      min_output_rate=1, max_output_rate=3, output_product=self.pie,
-                                      suppliers=[self.dough_maker, self.filling_maker], delays=[3.2, 1.2])
+        self.output_machine = Machine(name="Pie maker", min_batch_time=30, max_batch_time=300, batch_time=50, batch_size=30,
+                                      output_product=self.pie,
+                                      suppliers=[self.dough_maker, self.filling_maker], delays=[1.3, 1.2])
 
     def test_auto_assigns_suppliers(self):
         flour_supplier = None
         water_supplier = None
         cream_supplier = None
         for supplier in ExternalSupplier._instances:
-            if supplier.name == 'Supplier_of_flour':
+            if supplier.name == 'supplier of flour':
                 flour_supplier = supplier
-            elif supplier.name == 'Supplier_of_water':
+            elif supplier.name == 'supplier of water':
                 water_supplier = supplier
-            elif supplier.name == 'Supplier_of_cream':
+            elif supplier.name == 'supplier of cream':
                 cream_supplier = supplier
         self.assertTrue(flour_supplier in self.dough_maker._suppliers)
         self.assertTrue(flour_supplier in self.filling_maker._suppliers)

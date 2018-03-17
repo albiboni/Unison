@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <title>Electron Boilerplate</title>
+</head>
+<body>
+
+  <div id="app" class="container-fluid">
+    <div class="row">
+
+      <div class="col-9 canvas_container">
+        <canvas width="100" height="100" id="canvas"></canvas>
+      </div>
+
+      <div class="col-3 settings_container">
+        <div class="container">
+          <div class="row" id="empty_settings">
+            <h3>No graph created.</h3>
+          </div>
+
+      
+          <div class="row" id="node_settings" style="display:none">
+            <label>Name</label>
+            <div class="input-group-sm mb-3">
+              <input id="node_name" type="text" class="form-control c_input" placeholder="Machine 1" aria-label="Machine 1" aria-describedby="basic-addon1">
+            </div>
+
+            <label>Minimum Output Rate</label>
+            <div class="input-group-sm mb-3">
+              <input id="node_min_or" type="text" class="form-control c_input" placeholder="0" aria-label="0" aria-describedby="basic-addon1">
+            </div>
+
+            <label>Maximum Output Rate</label>
+            <div class="input-group-sm mb-3">
+              <input id="node_max_or" type="text" class="form-control c_input" placeholder="100" aria-label="100" aria-describedby="basic-addon1">
+            </div>
+
+            <label>Output Product</label>
+            <div class="input-group-sm mb-3">
+              <input id="node_op" type="text" class="form-control c_input" placeholder="Product 1" aria-label="Product 1" aria-describedby="basic-addon1">
+            </div>
+          </div>
+            <!--min_output_rate
+  max_output_rate
+  output_rate
+  is_on
+  output_product-->
+
+
+          <div class="row" id="link_settings" style="display:none">
+            <label>Delay</label>
+            <div class="input-group-sm mb-3">
+              <input id="link_delay" type="text" class="form-control c_input" placeholder="10" aria-label="10" aria-describedby="basic-addon1">
+            </div>
+          </div>
+          </div>
+
+        </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

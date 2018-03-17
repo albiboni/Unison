@@ -6,13 +6,15 @@ import json
 from core.plant_graph.ExternalSupplier import ExternalSupplier
 from core.plant_graph.Machine import Machine
 from core.plant_graph.Product import Product
+from core.plant_graph.time_schedule import create_time_schedule
 
 
 def write_json(output_machine: Machine, filename):
     the_dict = {"products": output_machine.output_product.to_dict(),
                 "machines": output_machine.to_dict(),
                 "external_suppliers": ExternalSupplier.to_dict(),
-                "graph": output_machine.get_graph()}
+                "graph": output_machine.get_graph(),
+                "schedule": create_time_schedule(output_machine)}
     json.dump(the_dict, open(filename, 'w'), indent=4)
     return the_dict
 
@@ -29,17 +31,19 @@ def read_json(filename):
     ExternalSupplier.reset_instance_tracker()
     # First make list, then add connections
     suppliers = {name: Machine(name=name,
-                               min_output_rate=val['min_output_rate'],
-                               max_output_rate=val['max_output_rate'],
-                               output_rate=val['output_rate'],
+                               min_batch_time=val['min_batch_time'],
+                               max_batch_time=val['max_batch_time'],
+                               batch_time=val['batch_time'],
+                               batch_size=val['batch_size'],
                                is_on=val['is_on'],
                                output_product=products[val['output_product']],
                                test_suppliers=False
                                ) for name, val in the_dict['machines'].items()}
     suppliers = {**suppliers, **{name: ExternalSupplier(output_product=products[val['output_product']],
-                                                        min_output_rate=val['min_output_rate'],
-                                                        max_output_rate=val['max_output_rate'],
-                                                        output_rate=val['output_rate'],
+                                                        min_batch_time=val['min_batch_time'],
+                                                        max_batch_time=val['max_batch_time'],
+                                                        batch_time=val['batch_time'],
+                                                        batch_size=val['batch_size'],
                                                         ) for name, val in the_dict['external_suppliers'].items()}}
     for supplier_links in the_dict['graph']:
         base = supplier_links[0]
