@@ -3,8 +3,8 @@ import math
 
 
 class Node(object):
-    def __init__(self, identifier: str, production: float, dependecies: dict = None):
-        self.dependecies = dependecies
+    def __init__(self, identifier: str, production: float, dependencies: dict):
+        self.dependencies = dependencies
         self.production = production
         self.id = identifier
         self.distance = 0
@@ -14,15 +14,14 @@ class Node(object):
         return self.id == other.id
 
 
-
 class Source(Node):
     def __init__(self, identifier):
-        super().__init__(identifier, math.inf)
+        super().__init__(identifier, math.inf, {})
 
 
 class Sink(Node):
     def __init__(self, identifier):
-        super().__init__(identifier, 0)
+        super().__init__(identifier, 0, {})
 
 
 class Edge(object):
@@ -56,12 +55,47 @@ class Edge(object):
 
 
 class Graph(object):
-    def __init__(self, edges, directed=True):
-        self._source = Source('s')
-        self.nodes = {'s': self._source}
+    def __init__(self, edges, directed=True, residual=False):
+        self.nodes = {}
+        self._sources = {}
         self.graph = defaultdict(dict)
         self.is_directed = directed
         self._add_connections(edges)
+        if not residual:
+            self.init_edges_capacity()
+
+    def get_parent_nodes(self, node_id):
+        if node_id in [node.id for node in self.sources]:
+            return None
+
+        parent_node_ids = []
+        for node_1_id, inner_dict in list(self.graph.items()):
+            for node_2_id, edge in list(inner_dict.items()):
+                if node_2_id == node_id:
+                    parent_node_ids.append(node_1_id)
+        return parent_node_ids
+
+    def init_edges_capacity(self):
+        for node_1_id, inner_dict in list(self.graph.items()):
+            if not self.is_source(node_1_id) and not self.is_sink(node_1_id):
+                for node_2_id, edge in list(inner_dict.items()):
+                    edge = self.graph[node_1_id][node_2_id]
+                    try:
+                        edge.capacity = self.nodes[node_1_id].production / \
+                                        self.nodes[node_1_id].dependencies[node_1_id]
+                    except AttributeError as e:
+                        raise AttributeError("Trying to set capacity of source edge, they are set to infinity")
+
+    def is_source(self, node_id):
+        return node_id in [node.id for node in self.sources]
+
+    def is_sink(self, node_id):
+        return node_id in [node.id for node in filter(lambda x: isinstance(x, Sink), self.nodes)]
+
+    @property
+    def sources(self):
+        self._sources = list(filter(lambda x: isinstance(x, Source), self.nodes))
+        return self._sources
 
     def __getitem__(self, item):
         return self.graph[item]
@@ -70,13 +104,10 @@ class Graph(object):
         for edge in edges:
             self.add_edge(edge)
 
-    def _add_initial_nodes(self, node):
-        self.add_edge(Edge(self._source, node, capacity=math.inf))
-
     def add_edge(self, edge):
         # connect sources of elements to the source node
-        if edge.node_1.dependecies is None and not isinstance(edge.node_1, Source):
-            self._add_initial_nodes(edge.node_1)
+        if isinstance(edge.node_1, Source):
+            edge._capacity = math.inf
 
         # add nodes references to the dict of nodes
         self.nodes[edge.node_1.id] = edge.node_1
@@ -89,7 +120,7 @@ class Graph(object):
     def neighbours(self, node):
         return [self.nodes[identifier] for identifier in list(self.graph[node.id].keys())]
 
-    def shortest_path(self, start_node, end_node):
+    def bfs(self, start_node):
         for node in list(self.nodes.values()):
             node.distance = math.inf
 
@@ -105,8 +136,11 @@ class Graph(object):
                     neighbour.parent = current_node
                     queue.append(neighbour)
 
+    def shortest_path(self, start_node, end_node):
+        self.bfs(start_node)
+
         def get_path(node, acc):
-            if node.id == self._source.id:
+            if node.id == start_node.id:
                 return acc[::-1]
             else:
                 return get_path(node.parent, acc + [self.graph[node.parent.id][node.id]])
@@ -115,6 +149,26 @@ class Graph(object):
         if end_node.distance != math.inf:
             path = get_path(end_node, path)
         return path
+
+    def get_subgraphs(self):
+        graphs = []
+        for source in self.sources:
+            self.bfs(source)
+            edges_subgraph = list(filter(lambda x: x.distance < math.inf, self.nodes))
+            graphs.append(Graph(edges_subgraph))
+
+        return graphs
+
+    def residual_graph(self):
+        edges = []
+        for node_1, inner_dict in list(self.graph.items()):
+            for node_2, edge in list(inner_dict.items()):
+                if edge.capacity - edge.flow  > 0:
+                    edges.append(Edge(node_1, node_2, capacity=edge.capacity - edge.flow))
+                elif edge.capacity == edge.flow:
+                    edges.append(Edge(node_2, node_1, capacity=edge.flow))
+
+        return Graph(edges, directed=True, residual=True)
 
 
 
