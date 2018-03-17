@@ -1,0 +1,97 @@
+{
+    "products": {
+        "flour": {
+            "units": "kg",
+            "sub_products": {}
+        },
+        "water": {
+            "units": "liter",
+            "sub_products": {}
+        },
+        "dough": {
+            "units": "kg",
+            "sub_products": {
+                "flour": 0.3,
+                "water": 0.5
+            }
+        },
+        "cream": {
+            "units": "kg",
+            "sub_products": {}
+        },
+        "filling": {
+            "units": "liter",
+            "sub_products": {
+                "cream": 0.5,
+                "flour": 0.1
+            }
+        },
+        "pie": {
+            "units": "unit",
+            "sub_products": {
+                "dough": 0.4,
+                "filling": 0.6
+            }
+        }
+    },
+    "machines": {
+        "Dough maker": {
+            "min_output_rate": 0.1,
+            "max_output_rate": 3.0,
+            "output_rate": 1.55,
+            "is_on": true,
+            "output_product": "dough"
+        },
+        "Filling maker": {
+            "min_output_rate": 0.1,
+            "max_output_rate": 4.0,
+            "output_rate": 2.05,
+            "is_on": true,
+            "output_product": "filling"
+        },
+        "Pie maker": {
+            "min_output_rate": 1,
+            "max_output_rate": 3,
+            "output_rate": 2.0,
+            "is_on": true,
+            "output_product": "pie"
+        }
+    },
+    "external_suppliers": {
+        "Supplier_of_water": {
+            "min_output_rate": 0.0,
+            "max_output_rate": 10000000000000.0,
+            "output_rate": 0.0,
+            "output_product": "water"
+        },
+        "Supplier_of_flour": {
+            "min_output_rate": 0.0,
+            "max_output_rate": 10000000000000.0,
+            "output_rate": 0.0,
+            "output_product": "flour"
+        },
+        "Supplier_of_cream": {
+            "min_output_rate": 0.0,
+            "max_output_rate": 10000000000000.0,
+            "output_rate": 0.0,
+            "output_product": "cream"
+        }
+    },
+    "graph": [
+        [
+            "Pie maker",
+            "Dough maker",
+            "Filling maker"
+        ],
+        [
+            "Dough maker",
+            "Supplier_of_flour",
+            "Supplier_of_water"
+        ],
+        [
+            "Filling maker",
+            "Supplier_of_cream",
+            "Supplier_of_flour"
+        ]
+    ]
+}
