@@ -72,6 +72,13 @@ class Machine:
     def suppliers(self):
         return self._suppliers
 
+    def count_suppliers_of_product(self, product):
+        count = 0
+        for supplier in self.suppliers:
+            if supplier.output_product == product:
+                count += 1
+        return count
+
     def add_next_machine(self, machine: 'Machine'):
         self.next_machines.append(machine)
 
@@ -122,5 +129,9 @@ class Machine:
         else:
             self.batch_time = self.batch_size / required_output_rate
         for supplier in self.suppliers:
-            supplier_rate = self.output_product.sub_products_quantities[supplier.output_product] * self.output_rate
-            supplier.set_supplier_rates(supplier_rate)
+            supplier_rate = self.output_product.sub_products_quantities[supplier.output_product] * \
+                            self.output_rate / self.count_suppliers_of_product(supplier.output_product)
+            successful = supplier.set_supplier_rates(supplier_rate)
+            if not successful:
+                return False
+        return True

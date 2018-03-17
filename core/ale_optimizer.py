@@ -4,7 +4,7 @@ Created by Alejandro Daniel Noel
 from core.plant_graph.Machine import Machine
 
 
-def optimize_plant(output_machine: Machine):
+def maximize_output(output_machine: Machine):
     increment = 1.0
     output_rate = 1.0
 
@@ -18,4 +18,5 @@ def optimize_plant(output_machine: Machine):
             output_rate -= increment
             increment *= 0.5
             output_rate += increment
-    return output_machine
+
+    return output_rate
