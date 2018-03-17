@@ -13,6 +13,9 @@ class Node(object):
     def __eq__(self, other):
         return self.id == other.id
 
+    def __hash__(self):
+        return ord(self.id)
+
 
 class Source(Node):
     def __init__(self, identifier):
@@ -37,6 +40,9 @@ class Edge(object):
 
     def __eq__(self, other):
         return self.node_1.id == other.node_1.id and self.node_2.id == other.node_2.id
+
+    def __hash__(self):
+        return ord(self.node_1.id) + ord(self.node_2.id)
 
     @property
     def node_1(self):
@@ -91,6 +97,13 @@ class Graph(object):
 
     def is_sink(self, node_id):
         return node_id in [node.id for node in filter(lambda x: isinstance(x, Sink), self.nodes)]
+
+    def edges(self):
+        edges = []
+        for node_1_id, inner_dict in list(self.graph.items()):
+            for node_2_id, edge in list(inner_dict.items()):
+                edges.append(edge)
+        return edges
 
     @property
     def sources(self):
@@ -154,7 +167,10 @@ class Graph(object):
         graphs = []
         for source in self.sources:
             self.bfs(source)
-            edges_subgraph = list(filter(lambda x: x.distance < math.inf, self.nodes))
+            nodes_subgraph = list(filter(lambda x: x.distance < math.inf, self.nodes.values()))
+            edges_subgraph = list(filter(lambda x: x.node_1 in nodes_subgraph and
+                                                   x.node_2 in nodes_subgraph,
+                                self.edges()))
             graphs.append(Graph(edges_subgraph))
 
         return graphs
@@ -163,10 +179,12 @@ class Graph(object):
         edges = []
         for node_1, inner_dict in list(self.graph.items()):
             for node_2, edge in list(inner_dict.items()):
-                if edge.capacity - edge.flow  > 0:
-                    edges.append(Edge(node_1, node_2, capacity=edge.capacity - edge.flow))
+                print(edge)
+                if edge.capacity - edge.flow > 0:
+                    edges.append(Edge(self.nodes[node_1], self.nodes[node_2],
+                                      capacity=edge.capacity - edge.flow))
                 elif edge.capacity == edge.flow:
-                    edges.append(Edge(node_2, node_1, capacity=edge.flow))
+                    edges.append(Edge(self.nodes[node_2], self.nodes[node_1], capacity=edge.flow))
 
         return Graph(edges, directed=True, residual=True)
 

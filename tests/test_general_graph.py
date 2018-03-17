@@ -47,5 +47,16 @@ class TestGraph(unittest.TestCase):
         for i, edge in enumerate(self.graph.shortest_path(self.graph.nodes['a'], self.node_sink)):
             self.assertEqual(edge, shortest_path[i])
 
+    def test_subgraphs(self):
+        subgraphs = self.graph.get_subgraphs()
+        subgraph_0 = set(map(lambda x: x.id, {self.node_a, self.node_c, self.node_e,
+                                              self.node_sink}))
+        subgraph_1 = set(map(lambda x: x.id, {self.node_b, self.node_d, self.node_f, self.node_e,
+                                     self.node_g,
+                      self.node_h, self.node_sink}))
+        self.assertEqual(set(subgraphs[0].nodes), subgraph_0)
+        self.assertEqual(set(subgraphs[1].nodes), subgraph_1)
+
+
 if __name__ == '__main__':
     unittest.main()
