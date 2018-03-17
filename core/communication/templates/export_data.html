@@ -6,14 +6,13 @@
     <script src="{{ url_for('static', filename='jquery-3.1.1.min.js') }}"></script>
 </head>
 <body>
-    <p> export</p>
     <script>
         $("document").ready(function () {
             $('#target').html('sending..');
             $('#fail').html('Timeout reached..');
 
             var exported_json = {{json|tojson}};
-            var url = "127.0.0.1:12348";  // TODO: change url
+            var url = "localhost:12348";  // TODO: change url
 
             $.ajax({
                 type:"POST",
