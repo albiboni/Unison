@@ -18,12 +18,13 @@ def dicts_are_equal(dict1, dict2):
         if isinstance(obj, list):
             return sorted(ordered_recursive(x) for x in obj)
         else:
-            return obj
+            return str(obj)
     return ordered_recursive(dict1) == ordered_recursive(dict2)
 
 
 class TestGraph(unittest.TestCase):
     def setUp(self):
+        ExternalSupplier.reset_instance_tracker()
         self.flour = Product(name="flour", units='kg')
         self.water = Product(name="water", units='liter')
         self.cream = Product(name="cream", units='kg')
@@ -34,24 +35,28 @@ class TestGraph(unittest.TestCase):
                                    output_product=self.dough)
         self.filling_maker = Machine(name="Filling maker", min_output_rate=0.1, max_output_rate=4.0,
                                      output_product=self.filling)
-        self.output_machine = Machine(name="Pie maker", min_output_rate=1, max_output_rate=3,
-                                      output_product=self.pie, suppliers=[self.dough_maker, self.filling_maker])
+        self.output_machine = Machine(name="Pie maker",
+                                      min_output_rate=1, max_output_rate=3, output_product=self.pie,
+                                      suppliers=[self.dough_maker, self.filling_maker], delays=[3.2, 1.2])
 
     def test_auto_assigns_suppliers(self):
         flour_supplier = None
         water_supplier = None
         cream_supplier = None
-        for supplier in ExternalSupplier.instances:
+        for supplier in ExternalSupplier._instances:
             if supplier.name == 'Supplier_of_flour':
                 flour_supplier = supplier
             elif supplier.name == 'Supplier_of_water':
                 water_supplier = supplier
             elif supplier.name == 'Supplier_of_cream':
                 cream_supplier = supplier
-        self.assertTrue(flour_supplier in self.dough_maker.suppliers)
-        self.assertTrue(flour_supplier in self.filling_maker.suppliers)
-        self.assertTrue(water_supplier in self.dough_maker.suppliers)
-        self.assertTrue(cream_supplier in self.filling_maker.suppliers)
+        self.assertTrue(flour_supplier in self.dough_maker._suppliers)
+        self.assertTrue(flour_supplier in self.filling_maker._suppliers)
+        self.assertTrue(water_supplier in self.dough_maker._suppliers)
+        self.assertTrue(cream_supplier in self.filling_maker._suppliers)
+
+    def test_save_json(self):
+        write_json(self.output_machine, "sample_graph.json")
 
     def test_save_load_json(self):
         write_json(self.output_machine, "sample_graph.json")

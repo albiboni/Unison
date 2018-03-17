@@ -8,13 +8,13 @@ from core.plant_graph.Product import Product
 
 
 class ExternalSupplier:
-    instances = WeakSet()
+    _instances = WeakSet()
 
-    def __new__(cls, output_product: Product, next_machines: List = (),
+    def __new__(cls, output_product: Product, next_machines: List = None,
                 min_output_rate: float = 0.0, max_output_rate: float = 10000000000000.0, output_rate=0.0):
         name = 'Supplier_of_' + output_product.name
 
-        for instance in cls.instances:
+        for instance in cls._instances:
             if instance.name == name:
                 print(f"    <{name}> already exists, subscribing also to {','.join([f'<{machine.name}>' for machine in next_machines])}")
                 instance.next_machines += next_machines
@@ -26,11 +26,11 @@ class ExternalSupplier:
         self.max_output_rate = max_output_rate
         self.output_rate = output_rate
         self.output_product = output_product
-        self.next_machines = next_machines
+        self.next_machines = next_machines or []
 
         print(f"    A generic supplier of <{output_product.name}> has been created")
 
-        cls.instances.add(self)
+        cls._instances.add(self)
         return self
 
     def __hash__(self):
@@ -42,13 +42,18 @@ class ExternalSupplier:
     @classmethod
     def to_dict(cls):
         the_dict = {}
-        for supplier in cls.instances:
+        for supplier in cls._instances:
             the_dict[supplier.name] = {"min_output_rate": supplier.min_output_rate,
                                        "max_output_rate": supplier.max_output_rate,
                                        "output_rate": supplier.output_rate,
                                        "output_product": supplier.output_product.name
                                        }
         return the_dict
+
+    @classmethod
+    def reset_instance_tracker(cls):
+        cls._instances = WeakSet()
+        print("\nExternalSupplier was reset \n")
 
     @staticmethod
     def get_graph():

@@ -26,6 +26,7 @@ def read_json(filename):
         product.sub_products_quantities = {products[name]: quantity
                                            for name, quantity in the_dict['products'][product.name]['sub_products'].items()}
 
+    ExternalSupplier.reset_instance_tracker()
     # First make list, then add connections
     suppliers = {name: Machine(name=name,
                                min_output_rate=val['min_output_rate'],
@@ -42,7 +43,9 @@ def read_json(filename):
                                                         ) for name, val in the_dict['external_suppliers'].items()}}
     for supplier_links in the_dict['graph']:
         base = supplier_links[0]
-        suppliers[base].add_suppliers([suppliers[name] for name in supplier_links[1:]])
+        supplier = supplier_links[1]
+        delay = supplier_links[2]
+        suppliers[base].add_supplier(suppliers[supplier], delay)
 
     # return the last machine in the chain (the graph was built backwards)
     return suppliers[the_dict['graph'][0][0]]
