@@ -81,8 +81,8 @@ class Graph(object):
                 for node_2_id, edge in list(inner_dict.items()):
                     edge = self.graph[node_1_id][node_2_id]
                     try:
-                        edge.capacity = self.nodes[node_1_id].production / \
-                                        self.nodes[node_1_id].dependencies[node_1_id]
+                        edge._capacity = min([self.nodes[node_1_id].production / dependency
+                                             for dependency in self.nodes[node_1_id].dependencies.values()])
                     except AttributeError as e:
                         raise AttributeError("Trying to set capacity of source edge, they are set to infinity")
 
@@ -94,7 +94,7 @@ class Graph(object):
 
     @property
     def sources(self):
-        self._sources = list(filter(lambda x: isinstance(x, Source), self.nodes))
+        self._sources = list(filter(lambda x: isinstance(x, Source), self.nodes.values()))
         return self._sources
 
     def __getitem__(self, item):

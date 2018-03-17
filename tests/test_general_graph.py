@@ -35,21 +35,17 @@ class TestGraph(unittest.TestCase):
         self.assertEqual(self.graph['b']['d'], self.edge_bd)
 
     def test_initial_edges(self):
-        self.assertEqual(self.graph['s']['a'].node_2, self.node_a)
-        self.assertEqual(self.graph['s']['b'].node_2, self.node_b)
+        self.assertEqual(self.graph['a']['c'].node_2, self.node_c)
+        self.assertEqual(self.graph['b']['d'].node_2, self.node_d)
 
     def test_neighbours(self):
         self.assertEqual(self.graph.neighbours(self.node_b)[0].id, self.node_d.id)
         self.assertEqual(self.graph.neighbours(self.node_b)[1].id, self.node_f.id)
 
     def test_shortest_path(self):
-        shortest_path = [self.graph['s']['a'], self.edge_ac, self.edge_ce, self.sink_edge]
-        for i, edge in enumerate(self.graph.shortest_path(self.graph._source, self.node_sink)):
+        shortest_path = [self.edge_ac, self.edge_ce, self.sink_edge]
+        for i, edge in enumerate(self.graph.shortest_path(self.graph.nodes['a'], self.node_sink)):
             self.assertEqual(edge, shortest_path[i])
-
-
-
-
 
 if __name__ == '__main__':
     unittest.main()
