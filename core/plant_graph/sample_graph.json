@@ -58,6 +58,12 @@
         }
     },
     "external_suppliers": {
+        "Supplier_of_cream": {
+            "min_output_rate": 0.0,
+            "max_output_rate": 10000000000000.0,
+            "output_rate": 0.0,
+            "output_product": "cream"
+        },
         "Supplier_of_flour": {
             "min_output_rate": 0.0,
             "max_output_rate": 10000000000000.0,
@@ -69,12 +75,6 @@
             "max_output_rate": 10000000000000.0,
             "output_rate": 0.0,
             "output_product": "water"
-        },
-        "Supplier_of_cream": {
-            "min_output_rate": 0.0,
-            "max_output_rate": 10000000000000.0,
-            "output_rate": 0.0,
-            "output_product": "cream"
         }
     },
     "graph": [

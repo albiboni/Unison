@@ -10,6 +10,10 @@ class Node(object):
         self.distance = 0
         self.parent = None
 
+    def __eq__(self, other):
+        return self.id == other.id
+
+
 
 class Source(Node):
     def __init__(self, identifier):
@@ -31,6 +35,9 @@ class Edge(object):
 
     def __str__(self):
         return "Edge {0} -> {1}" .format(self.node_1.id, self.node_2.id)
+
+    def __eq__(self, other):
+        return self.node_1.id == other.node_1.id and self.node_2.id == other.node_2.id
 
     @property
     def node_1(self):
@@ -87,26 +94,26 @@ class Graph(object):
             node.distance = math.inf
 
         start_node.distance = 0
-        queue = deque(start_node)
+        queue = deque()
+        queue.append(start_node)
 
-        while queue.count != 0:
+        while len(queue) != 0:
             current_node = queue.popleft()
             for neighbour in self.neighbours(current_node):
                 if neighbour.distance == math.inf:
                     neighbour.distance = current_node.distance + 1
                     neighbour.parent = current_node
-                    deque.append(neighbour)
+                    queue.append(neighbour)
 
-        def get_path(node):
+        def get_path(node, acc):
             if node.id == self._source.id:
-                return node
+                return acc[::-1]
             else:
-                return [node].extend(get_path(node.parent))
+                return get_path(node.parent, acc + [self.graph[node.parent.id][node.id]])
 
-        path = None
+        path = []
         if end_node.distance != math.inf:
-            path = get_path(end_node)
-
+            path = get_path(end_node, path)
         return path
 
 
