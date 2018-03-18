@@ -39,7 +39,7 @@ def to_graph_obj(output_machine):
 
 def update_output_machine(_output_machine, _graph_obj):
     for edge in _graph_obj.edges:
-        _output_machine.search_machine_by_name(edge.node_1.id).set_output_rate = edge.local_flow
+        _output_machine.search_machine_by_name(edge.node_1.id).output_rate = edge.local_flow
 
 
 if __name__ == "__main__":
