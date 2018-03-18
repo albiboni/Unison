@@ -5,7 +5,6 @@ import { graphs } from "./graphs"
 
 export function ExportJSON(node_list, link_list, product_list) {
   var export_product = {};
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         }
 
   for (var idx in link_list) {
     export_graphs.push([(link_list[idx].is_subproduct) ? "supplier_of_" + link_list[idx].connected_from.name : link_list[idx].connected_from.name,
