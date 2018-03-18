@@ -52,5 +52,7 @@ def optimize_topology(output_machine: Machine, target_output_rate):
                 for downstream_machine in the_machine.next_machines:
                     downstream_machine.add_supplier(new_machine, downstream_machine.delay_for_supplier(the_machine))
                 break
-    return output_machine.set_supplier_rates(target_output_rate)
+    max_out = maximize_output(output_machine)
+    output_machine.set_supplier_rates(target_output_rate)
+    return max_out
 
