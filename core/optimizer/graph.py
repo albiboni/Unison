@@ -86,15 +86,15 @@ class Edge(object):
 
 
 class Graph(object):
-    def __init__(self, edges, directed=True, subgraph=False):
+    def __init__(self, edges, directed=True, residual=False, subgraph=False):
         self.nodes = {}
         self._sources = {}
         self._sink = None
         self.graph = defaultdict(dict)
         self.is_directed = directed
-        self.capacity = [edge.capacity for edge in edges ]
+        self.capacity = [edge.capacity for edge in edges]
         self._add_connections(edges)
-        if not subgraph:
+        if not subgraph and not residual:
             self.update_dependencies()
         if subgraph:
             self.init_edges_capacity()
@@ -235,7 +235,11 @@ class Graph(object):
                                       capacity=edge.capacity - edge.flow))
                 elif edge.capacity == edge.flow:
                     edges.append(Edge(self.nodes[node_2], self.nodes[node_1], capacity=edge.flow))
-        return Graph(edges, directed=True, subgraph=True)
+                else:
+                    edges.append(Edge(self.nodes[node_1], self.nodes[node_2],
+                                      capacity=edge.capacity))
+
+        return Graph(edges, directed=True, residual=True, subgraph=False)
 
     def get_subgraphs(self):
         graphs = []
@@ -245,7 +249,7 @@ class Graph(object):
                                                self.nodes.values())))
             edges_subgraph = copy.deepcopy(list(filter(lambda x: x.node_1 in nodes_subgraph and
                                                    x.node_2 in nodes_subgraph,
-                                self.edges())))
+                                self.edges)))
             self.remove_unwanted_dependencies(edges_subgraph,
                                               list(map(lambda x: x.id, nodes_subgraph)))
             graphs.append(Graph(edges_subgraph, subgraph=True))

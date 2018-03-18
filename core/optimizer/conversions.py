@@ -6,6 +6,7 @@ from core.plant_graph.machine import Machine
 from core.plant_graph.product import Product
 from core.optimizer.graph import Node, Sink, Source, Graph, Edge
 from core.plant_graph.json_parser import make_json_dict
+import math
 
 
 def to_graph_obj(output_machine):
@@ -29,14 +30,16 @@ def to_graph_obj(output_machine):
         for j, supplier in enumerate(suppliers):
             up_node = nodes[all_names.index(supplier.name)]
             edges.append(Edge(up_node, node, delay=output_machine.search_machine_by_name(node.id).delays[j]))
-    edges.append(Edge(nodes[[n.id for n in nodes].index(output_machine.name)], Sink('Sink', {output_machine.name: 1.0})))
-
+    edges.append(Edge(nodes[[n.id for n in nodes].index(output_machine.name)], Sink('Sink',
+                                                                                    {
+                                                                                        output_machine.name: math.inf})))
+    print([str(edge) for edge in edges])
     return Graph(edges, subgraph=False)
 
 
 def update_output_machine(_output_machine, _graph_obj):
     for edge in _graph_obj.edges:
-        _output_machine.search_machine_by_name(edge.node_1.id).set_output_rate = edge.flow
+        _output_machine.search_machine_by_name(edge.node_1.id).set_output_rate = edge.local_flow
 
 
 if __name__ == "__main__":
