@@ -10,7 +10,7 @@ def home():
     return render_template('home.html')
 
 
-@app.route('/run_python', methods=["GET", "POST"])
+@app.route('/import', methods=["GET", "POST"])
 def run_python():
     json = request.get_json()
     print('DO PYTHON')
