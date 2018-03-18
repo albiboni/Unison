@@ -8,6 +8,9 @@ import "./helpers/external_links.js";
 // Everything below is just to show you how it works. You can delete all of it.
 // ----------------------------------------------------------------------------
 
+// This defines the function format somehow
+var format = require('string-format');
+
 var node_list = [], link_list = [], product_list = [], machines_list, external_suppliers_list, graph_list;
 var product_json;
 var selected_item = null;
@@ -157,20 +160,33 @@ function show_gannt_chart() {
   google.charts.load('current', { 'packages': ['timeline'] });
   google.charts.setOnLoadCallback(drawChart);
   function drawChart() {
-    var container = document.getElementById('timeline');
-    var chart = new google.visualization.Timeline(container);
-    var dataTable = new google.visualization.DataTable();
+    var schedule = require('../../core/Optimized_plant').schedule;
 
-    dataTable.addColumn({ type: 'string', id: 'President' });
-    dataTable.addColumn({ type: 'date', id: 'Start' });
-    dataTable.addColumn({ type: 'date', id: 'End' });
-    dataTable.addRows([
-      ['Washington', new Date(1789, 3, 30), new Date(1797, 2, 4)],
-      ['Adams', new Date(1797, 2, 4), new Date(1801, 2, 4)],
-      ['Jefferson', new Date(1801, 2, 4), new Date(1809, 2, 4)]]);
+    var data = new google.visualization.DataTable();
+    data.addColumn({type: 'string', id: 'row_label'});
+    data.addColumn({type: 'string', id: 'bar_label'});
+    data.addColumn({type: 'string', id: 'Style', role: 'style'});
+    data.addColumn({type: 'number', id: 'Start'});
+    data.addColumn({type: 'number', id: 'End'});
 
 
-    chart.draw(dataTable);
+    for (var i = 0; i < schedule.length; i++) {
+      var row = schedule[i];
+      data.addRow([row[0],
+        "capacity " + row[3].toFixed(1) + "%",
+        format("color: rgb({0}, {1}, 0)", Math.floor(50+2*row[3]), Math.floor(255 - 2*row[3])),
+        row[1] * 1000,
+        row[2] * 1000]);
+    }
+
+    var options = {
+      width: 700,
+
+      height: 700
+    };
+
+    var chart = new google.visualization.Timeline(document.getElementById('chart_div'));
+    chart.draw(data, options);
   }
 }
 
