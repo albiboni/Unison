@@ -108,7 +108,7 @@ function populate_product_list() {
     }
     if (node_list[i].is_subproduct) {
       //TODO: FIX this sphagetti
-      product_list.push(new product(node_list[i].name, "-", {}));
+      product_list.push(new product(node_list[i].name, node_list[i].output_product_units, {}));
       continue;
     }
     var sub_products = {};
@@ -126,7 +126,7 @@ function populate_product_list() {
       }
 
     }
-    product_list.push(new product(node_list[i].output_product, "", sub_products));
+    product_list.push(new product(node_list[i].output_product, node_list[i].output_product_units, sub_products));
 
 
   }
@@ -143,8 +143,8 @@ function send_graph() {
     contentType: "application/json",
     success: function (response) {
       // response_json = $.parseJSON(response);
-      node_list = ImportJSON_response(response, node_list);
       console.log(response);
+      node_list = ImportJSON_response(response, node_list);
     }
   });
 }

@@ -9,6 +9,7 @@ export class node {
     this.output_rate = output_rate;
     this.is_on = is_on;
     this.output_product = op;
+    this.output_product_units = '';
     this.selected = false;
     this.is_subproduct = false;
   }
@@ -18,6 +19,6 @@ export class node {
     this.x = x;
     this.y = y;
   }
-  
+
 
 }

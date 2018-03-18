@@ -9,6 +9,7 @@ var node_name = document.getElementById("node_name");
 var node_min_or = document.getElementById("node_min_or");
 var node_max_or = document.getElementById("node_max_or");
 var node_op = document.getElementById("node_op");
+var node_op_units = document.getElementById("node_op_units");
 var node_sp = document.getElementById("is_subproduct");
 var node_io = document.getElementById("is_enabled");
 
@@ -28,6 +29,7 @@ export function update_item_values(selected_item) {
     selected_item.min_output_rate = node_min_or.value;
     selected_item.max_output_rate = node_max_or.value;
     selected_item.output_product = node_op.value;
+    selected_item.output_product_units = node_op_units.value;
     selected_item.is_subproduct = node_sp.checked;
     selected_item.is_on = node_io.checked;
 
@@ -47,6 +49,7 @@ function update_fields(selected_item) {
     node_min_or.value = selected_item.min_output_rate;
     node_max_or.value = selected_item.max_output_rate;
     node_op.value = selected_item.output_product;
+    node_op_units.value = selected_item.output_product_units;
     node_sp.checked = selected_item.is_subproduct;
     node_io.checked = selected_item.is_on;
 

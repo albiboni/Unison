@@ -59,13 +59,14 @@ function update_node_list(parameter_name, node_list, json_data) {
 }
 
 export function ImportJSON_response(json_reposnse, node_list) {
-  for (var machine in json_reposnse.nodes) {
+  for (var machine in json_reposnse.machines) {
     var idx = node_list.map(x => x.name).indexOf(machine);
-    node_list[idx].output_rate = json_reposnse[machine]["output_rate"];
+    node_list[idx].output_rate = json_reposnse.machines[machine]["output_rate"];
   }
   for (var sup in json_reposnse.external_suppliers) {
-    var idx = node_list.map(x => x.name).indexOf(sup);
-    node_list[idx].output_rate = json_reposnse[sup]["output_rate"];
+    var short_name = sup.substring('supplier_of_'.length,);
+    var idx = node_list.map(x => x.name).indexOf(short_name);
+    node_list[idx].output_rate = json_reposnse.external_suppliers[sup]["output_rate"];
   }
   return node_list;
 }
