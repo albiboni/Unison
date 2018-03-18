@@ -43,10 +43,10 @@ import { grapth } from "./graphs";
 import { ExportJSON } from "./write_json";
 import { ImportJSON, ImportJSON_response } from "./read_json";
 
-function componentToHex(c) {
-  var hex = c.toString(16);
-  return hex.length === 1 ? "0" + hex : hex;
-}
+var canvas = document.getElementById("canvas");
+canvas.addEventListener('click', function(e) {
+  update_settings(selected_item);
+});
 
 canvas.addEventListener('mousewheel', function (e) {
   console.log(e.wheelDelta)
@@ -152,6 +152,29 @@ function send_graph() {
   });
 }
 
+// function show_gannt_chart() {
+//   ingannt = true;
+//   document.querySelector(".blur").style.display = 'block';
+//
+//   google.charts.load('current', { 'packages': ['timeline'] });
+//   google.charts.setOnLoadCallback(drawChart);
+//   function drawChart() {
+//     var container = document.getElementById('timeline');
+//     var chart = new google.visualization.Timeline(container);
+//     var dataTable = new google.visualization.DataTable();
+//
+//     dataTable.addColumn({ type: 'string', id: 'President' });
+//     dataTable.addColumn({ type: 'date', id: 'Start' });
+//     dataTable.addColumn({ type: 'date', id: 'End' });
+//     dataTable.addRows([
+//       ['Washington', new Date(1789, 3, 30), new Date(1797, 2, 4)],
+//       ['Adams', new Date(1797, 2, 4), new Date(1801, 2, 4)],
+//       ['Jefferson', new Date(1801, 2, 4), new Date(1809, 2, 4)]]);
+//
+//
+//     chart.draw(dataTable);
+//   }
+// }
 
 function show_gannt_chart() {
   ingannt = true;
@@ -333,15 +356,6 @@ window.addEventListener('resize', function (event) {
   canvas.height = canvas.clientHeight;
 
 });
-
-  for (var i = 0; i < schedule.length; i++) {
-    var row = schedule[i];
-    data.addRow([row[0],
-      "capacity " + row[3].toFixed(1) + "%",
-      format("color: rgb({0}, {1}, 0)", Math.floor(50+2*row[3]), Math.floor(255 - 2*row[3])),
-      row[1] * 1000,
-      row[2] * 1000]);
-  }
 
 var context = canvas.getContext('2d', { alpha: false });
 var origin_x = 0;
