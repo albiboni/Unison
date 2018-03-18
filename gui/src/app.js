@@ -184,6 +184,7 @@ function show_gannt_chart() {
   google.charts.setOnLoadCallback(drawChart);
   function drawChart() {
     var schedule = require('../../core/Optimized_plant').schedule;
+    console.log(schedule);
 
     var data = new google.visualization.DataTable();
     data.addColumn({type: 'string', id: 'row_label'});
@@ -208,7 +209,9 @@ function show_gannt_chart() {
       height: 700
     };
 
-    var chart = new google.visualization.Timeline(document.getElementById('chart_div'));
+    var container = document.getElementById('timeline');
+    var chart = new google.visualization.Timeline(container);
+    // var chart = new google.visualization.Timeline(document.getElementById('chart_div'));
     chart.draw(data, options);
   }
 }

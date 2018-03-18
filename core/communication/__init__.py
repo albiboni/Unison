@@ -13,7 +13,7 @@ def home():
 @app.route('/import', methods=["GET", "POST"])
 def run_python():
     json = request.get_json()
-    print('DO PYTHON')
+    print(json)
     new_json = json
     return jsonify(new_json)
 
