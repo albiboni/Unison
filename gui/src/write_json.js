@@ -5,11 +5,14 @@ import { graphs } from "./graphs"
 
 export function ExportJSON(node_list, link_list, product_list) {
   var export_product = {};
+  var export_graphs = [];
+  var export_machines = {};
+  var export_external_suppliers = {};
 
   for (var idx in link_list) {
     export_graphs.push([(link_list[idx].is_subproduct) ? "supplier_of_" + link_list[idx].connected_from.name : link_list[idx].connected_from.name,
-                        link_list[idx].connected_to.name,
-                        link_list[idx].delay]);
+    link_list[idx].connected_to.name,
+    link_list[idx].delay]);
   }
 
   for (var idx in node_list) {
@@ -18,7 +21,7 @@ export function ExportJSON(node_list, link_list, product_list) {
         "min_output_rate": node_list[idx].min_output_rate,
         "max_output_rate": node_list[idx].max_output_rate,
         "output_rate": node_list[idx].output_rate,
-        "output_product":node_list[idx].name
+        "output_product": node_list[idx].name
       }
     }
     else {
@@ -27,20 +30,22 @@ export function ExportJSON(node_list, link_list, product_list) {
         "max_output_rate": node_list[idx].max_output_rate,
         "output_rate": node_list[idx].output_rate,
         "is_on": node_list[idx].is_on,
-        "output_product":node_list[idx].output_product
+        "output_product": node_list[idx].output_product
       }
     }
 
   }
 
   var data = {
-    "products" : export_product,
-    "machines" : export_machines,
-    "external_suppliers" : export_external_suppliers,
-    "graphs": export_graphs};
+    "products": export_product,
+    "machines": export_machines,
+    "external_suppliers": export_external_suppliers,
+    "graphs": export_graphs
+  };
 
 
-  return JSON.stringify(data);
+  return JSON.stringify(data)
+};
 //  fs.writeFile("./object.json", , (err) => {
 //    if (err) {
 //        console.error(err);
@@ -49,4 +54,4 @@ export function ExportJSON(node_list, link_list, product_list) {
 //    console.log("File has been created");
 //});
 
-}
+
