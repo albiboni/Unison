@@ -32,7 +32,8 @@ class Edge(object):
         self._node_1 = node_1
         self._node_2 = node_2
         self._capacity = capacity
-        self.flow = flow
+        self._flow = flow
+        self._local_flow = None
         self.delay = delay
 
     def __str__(self):
@@ -43,6 +44,30 @@ class Edge(object):
 
     def __hash__(self):
         return ord(self.node_1.id) + ord(self.node_2.id)
+
+    @property
+    def flow(self):
+        return self._flow
+
+    @flow.setter
+    def flow(self, value):
+        # if not isinstance(self.node_1, Source):
+        #    self._flow = value/list(self.node_1.dependencies.values())[0]
+        # else:
+        self._flow = value
+
+    @property
+    def local_flow(self):
+        if self._local_flow is None:
+            if not isinstance(self.node_1, Source):
+               self._local_flow = self._flow / list(self.node_1.dependencies.values())[0]
+            else:
+                self._local_flow = self._flow
+        return self._local_flow
+
+    @local_flow.setter
+    def local_flow(self, value):
+        self._local_flow = value
 
     @property
     def node_1(self):
@@ -61,7 +86,7 @@ class Edge(object):
 
 
 class Graph(object):
-    def __init__(self, edges, directed=True, subgraph=True):
+    def __init__(self, edges, directed=True, subgraph=False):
         self.nodes = {}
         self._sources = {}
         self._sink = None
@@ -71,6 +96,8 @@ class Graph(object):
         self._add_connections(edges)
         if not subgraph:
             self.update_dependencies()
+        if subgraph:
+            self.init_edges_capacity()
 
     def get_parent_nodes(self, node_id):
         if node_id in [node.id for node in self.sources]:
@@ -108,17 +135,18 @@ class Graph(object):
                 for node_2_id, edge in list(inner_dict.items()):
                     edge = self.graph[node_1_id][node_2_id]
                     try:
-                        edge._capacity = self.nodes[node_1_id].production / list(self.nodes[
+                        edge._capacity = self.nodes[node_1_id].production * list(self.nodes[
                             node_1_id].dependencies.values())[0]
-
                     except AttributeError as e:
                         raise AttributeError("Trying to set capacity of source edge, they are set to infinity")
+                    except IndexError as e:
+                        edge._capacity = math.inf
 
     def is_source(self, node_id):
         return node_id in [node.id for node in self.sources]
 
     def is_sink(self, node_id):
-        return node_id in [node.id for node in filter(lambda x: isinstance(x, Sink), self.nodes)]
+        return node_id == self.sink.id
 
     @property
     def edges(self):
@@ -154,7 +182,7 @@ class Graph(object):
 
     def add_edge(self, edge):
         # connect sources of elements to the source node
-        if isinstance(edge.node_1, Source):
+        if isinstance(edge.node_1, Source) or isinstance(edge.node_2, Sink):
             edge._capacity = math.inf
 
         # add nodes references to the dict of nodes
@@ -223,6 +251,12 @@ class Graph(object):
             graphs.append(Graph(edges_subgraph, subgraph=True))
 
         return graphs
+
+    def common_nodes(self, subgraph_1, subgraph_2):
+        common = list(filter(lambda subgraph_1_node:
+                           subgraph_1_node in subgraph_2.nodes,
+                           subgraph_1.nodes))
+        return [node for node in common if not self.is_sink(node)]
 
     def remove_unwanted_dependencies(self, edges, nodes):
         for edge in edges:
