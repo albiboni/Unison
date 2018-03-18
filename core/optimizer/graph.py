@@ -120,6 +120,7 @@ class Graph(object):
     def is_sink(self, node_id):
         return node_id in [node.id for node in filter(lambda x: isinstance(x, Sink), self.nodes)]
 
+    @property
     def edges(self):
         edges = []
         for node_1_id, inner_dict in list(self.graph.items()):

@@ -101,13 +101,6 @@
         }
     },
     "external_suppliers": {
-        "supplier of cream": {
-            "min_batch_time": 0.001,
-            "max_batch_time": 1.0,
-            "batch_time": 138248847.9262673,
-            "batch_size": 10000000.0,
-            "output_product": "cream"
-        },
         "supplier of flour": {
             "min_batch_time": 0.001,
             "max_batch_time": 1.0,
@@ -121,6 +114,13 @@
             "batch_time": 86021505.37634408,
             "batch_size": 10000000.0,
             "output_product": "water"
+        },
+        "supplier of cream": {
+            "min_batch_time": 0.001,
+            "max_batch_time": 1.0,
+            "batch_time": 138248847.9262673,
+            "batch_size": 10000000.0,
+            "output_product": "cream"
         }
     },
     "graph": [

@@ -69,6 +69,10 @@ class Machine:
     def output_rate(self):
         return self.batch_size / self.batch_time if self.is_on else 0.0
 
+    @output_rate.setter
+    def output_rate(self, value):
+        self.batch_time = self.batch_size / value
+
     @property
     def suppliers(self):
         return self._suppliers

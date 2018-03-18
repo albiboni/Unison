@@ -75,6 +75,14 @@ class ExternalSupplier:
     def get_graph():
         return []
 
+    @property
+    def suppliers(self):
+        return []
+
+    @output_rate.setter
+    def output_rate(self, value):
+        self.batch_time = self.batch_size / value
+
     def get_scheduling(self, end_time, output_units_required):
         return []
 
@@ -86,4 +94,7 @@ class ExternalSupplier:
             return True
 
     def search_machine_by_name(self, name):
-        return None
+        if name == self.name:
+            return self
+        else:
+            return None

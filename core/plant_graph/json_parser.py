@@ -9,12 +9,16 @@ from core.plant_graph.product import Product
 from core.plant_graph.time_schedule import create_time_schedule
 
 
+def make_json_dict(output_machine: Machine):
+    return {"products": output_machine.output_product.to_dict(),
+            "machines": output_machine.to_dict(),
+            "external_suppliers": ExternalSupplier.to_dict(),
+            "graph": output_machine.get_graph(),
+            "schedule": create_time_schedule(output_machine)}
+
+
 def write_json(output_machine: Machine, filename):
-    the_dict = {"products": output_machine.output_product.to_dict(),
-                "machines": output_machine.to_dict(),
-                "external_suppliers": ExternalSupplier.to_dict(),
-                "graph": output_machine.get_graph(),
-                "schedule": create_time_schedule(output_machine)}
+    the_dict = make_json_dict(output_machine)
     json.dump(the_dict, open(filename, 'w'), indent=4)
     return the_dict
 
