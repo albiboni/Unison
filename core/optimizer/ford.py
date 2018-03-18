@@ -1,5 +1,6 @@
 from core.optimizer.graph import Source, Graph, Edge, Node, Sink
-from core.optimizer.test import get_value, get_min_cut, ford_best
+from core.optimizer.graph_optimization import ford_best, get_min_cut, get_value
+
 #node_source = Source('s')
 #node_a = Node("a", 10, {"a": 4})
 #node_b = Node("b", 15, {"b": 4})

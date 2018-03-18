@@ -1,5 +1,6 @@
 from core.optimizer.graph import Source, Graph, Edge, Node, Sink
-import math
+
+from core.optimizer.graph_optimization import find_final_flow, ford_best
 
 '''
 node_source = Source('s')
@@ -45,65 +46,29 @@ graph2 = Graph([edge2_ac, edge2_bd, edge2_df, edge2_ce,
                   edge2_fg, edge2_eg, edge2_gt])
 graph2.update_dependencies()
 
-
-def get_value(shortest_path):
-    values = []
-    for i in range(len(shortest_path)):
-        values.append(shortest_path[i].capacity)
-    minimum = min(values)
-    idx_min = values.index(min(values))
-    return values, idx_min, minimum
-
 #graph = Graph([edge_sa, edge_sb, edge_sf, edge_ac, edge_bd, edge_fe, edge_de, edge_dc, edge_ch, edge_ht, edge_et])
 #def ford_best(graph):
 #shortest_path = graph.shortest_path(node_source, node_sink)
-def get_min_cut(node_source, res_graph, graph):
-    res_graph.bfs(node_source)
-    set_S = []
-    set_T = []
-    for node in list(res_graph.nodes.values()):
-        if node.distance == float('inf'):
-            set_T.append(node)
-        else:
-            set_S.append(node)
-
-    min_cut = []
-
-    for edge in graph.edges():
-        if edge.node_1 in set_S and edge.node_2 in set_T:
-            min_cut.append(edge)
-    print([str(edge) for edge in min_cut])
-    return min_cut
 
 
-def ford_best(graph):
-    node_source = graph.sources[0]
-    node_sink = graph.sink
-    print ([(str(edge), edge.capacity) for edge in graph.edges()])
-    res_graph = graph.residual_graph()
-    max_flow = 0
-    constraints = []
-    shortest_path = res_graph.shortest_path(node_source, node_sink)
-    while len(shortest_path) != 0:
-        print([str(edge) for edge in shortest_path])
-        print(res_graph.capacity)
-        values = get_value(shortest_path)
-        for i in range(len(shortest_path)):
-            if shortest_path[i] in graph.edges():
-                graph[shortest_path[i].node_1.id][shortest_path[i].node_2.id].flow += values[2]
-            elif shortest_path[i] in res_graph.edges():
-                graph[shortest_path[i].node_1.id][shortest_path[i].node_2.id].flow -= values[2]
-        max_flow += values[2]
-        constraints.append(str(shortest_path[values[1]]))
-        print([(str(edge), edge.flow) for edge in graph.edges()])
-        res_graph = graph.residual_graph()
-        shortest_path = res_graph.shortest_path(node_source, node_sink)
-    min_cut = get_min_cut(node_source, res_graph, graph)
-
-    return min_cut, res_graph, max_flow
 graphs = graph2.get_subgraphs()
 for graph in graphs:
     print(ford_best(graph)[2])
+print("common nodes: ", graph2.common_nodes(graphs[0], graphs[1]))
+
+# common_nodes = total_common_nodes(graph2)
+# graphs = graph2.get_subgraphs()
+# graphs = enforce_flow_constraints(graphs, common_nodes)
+# print([(str(edge), edge.flow) for edge in graphs[0].edges()])
+# print([(str(edge), edge.flow) for edge in graphs[1].edges()])
+
+find_final_flow(graph2)
+print([(str(edge), edge.local_flow) for edge in graph2.edges()])
+
+
+
+#     for i in range in graphs:
+#         print(ford_best(graph)[2])
 #min_cut, res_graph, max_flow = ford_best(graph)
 #for i inraphs
 
