@@ -4,6 +4,10 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+
+}
+
+body {
   overflow: hidden;
 }
 
@@ -13,15 +17,44 @@ a {
   color: #cb3837;
 }
 
+.blur {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left:0;
+
+  z-index:200;
+  background-color: grey;
+  opacity: 0.98;
+  display: none;
+}
+
+.gantt{
+  height: 180px;
+  width: auto;
+  margin: 0 auto;
+}
+
+.container-fluid, .row {
+  height: 100%;
+}
+
 .canvas_container {
 padding: 0;
+
 }
 .settings_container {
   -webkit-box-shadow: 0px 0px 32px 4px rgba(0,0,0,0.75);
   -moz-box-shadow: 0px 0px 32px 4px rgba(0,0,0,0.75);
   box-shadow: 0px 0px 32px 4px rgba(0,0,0,0.75);
   z-index: 100;
+
+ 
 }
+
+  .settings_container .container {
+  }
 
 canvas {
   background-color: gray;
@@ -30,5 +63,5 @@ canvas {
 }
 
 .container {
- margin: 0; 
+  margin: 0;
 }
