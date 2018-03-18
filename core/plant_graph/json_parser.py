@@ -17,14 +17,22 @@ def make_json_dict(output_machine: Machine):
             "schedule": create_time_schedule(output_machine)}
 
 
-def write_json(output_machine: Machine, filename):
+def write_json(output_machine: Machine, filename=None):
     the_dict = make_json_dict(output_machine)
-    json.dump(the_dict, open(filename, 'w'), indent=4)
-    return the_dict
+    if filename:
+        json.dump(the_dict, open(filename, 'w'), indent=4)
+    return json.dumps(the_dict)
 
 
-def read_json(filename):
-    the_dict = json.load(open(filename, 'r'))
+def read_json(filename=None, json_string=None, json_dict=None):
+    if filename:
+        the_dict = json.load(open(filename, 'r'))
+    elif json_string:
+        the_dict = json.loads(json_string)
+    elif json_dict:
+        the_dict = json_dict
+    else:
+        raise ValueError("no json source provided")
 
     # First make list, then add connections
     products = {name: Product(name=name, units=value["units"], sub_products_quantities={}) for name, value in the_dict['products'].items()}

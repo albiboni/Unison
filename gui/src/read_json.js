@@ -33,10 +33,10 @@ function update_node_list(parameter_name, node_list, json_data) {
         (canvas.width/4)* (node_list.length % 4),
         ~~(node_list.length/4)*(canvas.height/4),
         parameter_name,
-        json_data.machines[parameter_name]["min_output_rate"],
-        json_data.machines[parameter_name]["max_output_rate"],
+        json_data.machines[parameter_name]["min_batch_time"],
+        json_data.machines[parameter_name]["max_batch_time"],
         json_data.machines[parameter_name]["is_on"],
-        json_data.machines[parameter_name]["output_rate"],
+        json_data.machines[parameter_name]["batch_time"],
         json_data.machines[parameter_name]["output_product"]);
     }
     else {
@@ -44,10 +44,10 @@ function update_node_list(parameter_name, node_list, json_data) {
         (canvas.width/4)* (node_list.length % 4),
         ~~(node_list.length/4)*(canvas.height/4),
         parameter_name,
-        json_data.external_suppliers[parameter_name]["min_output_rate"],
-        json_data.external_suppliers[parameter_name]["max_output_rate"],
+        json_data.external_suppliers[parameter_name]["min_batch_time"],
+        json_data.external_suppliers[parameter_name]["max_batch_time"],
         null,
-        json_data.external_suppliers[parameter_name]["output_rate"],
+        json_data.external_suppliers[parameter_name]["batch_time"],
         json_data.external_suppliers[parameter_name]["output_product"]);
     }
     node_list.push(new_node);
@@ -64,9 +64,9 @@ export function ImportJSON_response(json_reposnse, node_list) {
     node_list[idx].output_rate = json_reposnse.machines[machine]["output_rate"];
   }
   for (var sup in json_reposnse.external_suppliers) {
-    var short_name = sup.substring('supplier_of_'.length,);
+    var short_name = sup.substring('supplier of '.length,);
     var idx = node_list.map(x => x.name).indexOf(short_name);
-    node_list[idx].output_rate = json_reposnse.external_suppliers[sup]["output_rate"];
+    node_list[idx].output_rate = json_reposnse.external_suppliers[sup]["batch_time"];
   }
   return node_list;
 }

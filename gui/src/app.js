@@ -10,6 +10,7 @@ import "./helpers/external_links.js";
 
 // This defines the function format somehow
 var format = require('string-format');
+var Reloader = require('reload-json'), reload = new Reloader();
 
 var node_list = [], link_list = [], product_list = [], machines_list, external_suppliers_list, graph_list;
 var product_json;
@@ -183,6 +184,9 @@ function show_gannt_chart() {
   google.charts.load('current', { 'packages': ['timeline'] });
   google.charts.setOnLoadCallback(drawChart);
   function drawChart() {
+    reload.load('../../core/Optimized_plant', function (err, data) {
+  // do stuff
+    });
     var schedule = require('../../core/Optimized_plant').schedule;
     console.log(schedule);
 
