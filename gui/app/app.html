@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="js/jquery-1.6.1.min.js"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+  <title>Electron Boilerplate</title>
+</head>
+<body>
+
+  <div id="app">
+   <div class="blur">
+        <div class="gantt" id="timeline"></div>
+   </div>
+  <div class="container-fluid">
+
+
+    <div class="row">
+
+      <div class="col-9 canvas_container">
+        <canvas width="100" height="100" id="canvas"></canvas>
+        <div id="chart_div"></div>
+      </div>
+
+      <div class="col-3 settings_container">
+        <div class="container">
+
+
+          <div class="row">
+            <h1 class="mt-2">Tools</h1>
+            <button type="button" class="btn btn-success btn-lg btn-block create_node_button ">Create Node</button>
+
+          </div>
+          <hr />
+
+          <div class="row" id="empty_settings">
+            <h1 class="mt-2">No Item Selected</h1>
+
+          </div>
+
+
+          <div class="row" id="node_settings" style="display:none">
+            <h1 class="mt-2">Node Settings</h1>
+            <hr />
+
+            <label>Name</label>
+            <div class="input-group-sm mb-3">
+              <input id="node_name" type="text" class="form-control c_input" placeholder="Machine 1" aria-label="Machine 1" aria-describedby="basic-addon1">
+            </div>
+
+            <label>Minimum Output Rate</label>
+            <div class="input-group-sm mb-3">
+              <input id="node_min_or" type="text" class="form-control c_input" placeholder="0" aria-label="0" aria-describedby="basic-addon1">
+            </div>
+
+            <label>Maximum Output Rate</label>
+            <div class="input-group-sm mb-3">
+              <input id="node_max_or" type="text" class="form-control c_input" placeholder="100" aria-label="100" aria-describedby="basic-addon1">
+            </div>
+
+            <!--<label>Input Products</label>-->
+            <!--<div class="input-group-sm mb-3">-->
+              <!--<input id="node_ip" type="text" class="form-control c_input" placeholder="" aria-label="" aria-describedby="basic-addon1">-->
+            <!--</div>-->
+
+            <label>Output Product</label>
+            <div class="input-group-sm mb-3">
+              <input id="node_op" type="text" class="form-control c_input" placeholder="Product 1" aria-label="Product 1" aria-describedby="basic-addon1">
+            </div>
+
+            <label>Output Product units</label>
+            <div class="input-group-sm mb-3">
+              <input id="node_op_units" type="text" class="form-control c_input" placeholder="" aria-label="" aria-describedby="basic-addon1">
+            </div>
+
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="is_subproduct">
+              <label class="form-check-label" for="is_subproduct">
+                Is subproduct?
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="is_enabled">
+              <label class="form-check-label" for="is_enabled">
+                Is enabled?
+              </label>
+            </div>
+
+            <button type="button" class="btn btn-primary btn-lg btn-block update_node_button ">Update Node</button>
+            <button type="button" class="btn btn-danger btn-lg btn-block delete_node_button">Delete Node</button>
+          </div>
+          <!--min_output_rate
+  max_output_rate
+  output_rate
+  is_on
+  output_product-->
+
+
+          <div class="row" id="link_settings" style="display:none">
+            <h1 class="mt-2">Link Settings</h1>
+            <hr />
+
+            <label>Delay</label>
+            <div class="input-group-sm mb-3">
+              <input id="link_delay" type="text" class="form-control c_input" placeholder="10" aria-label="10" aria-describedby="basic-addon1">
+            </div>
+            <label>Subproduct Amount</label>
+            <div class="input-group-sm mb-3">
+              <input id="link_amount" type="text" class="form-control c_input" placeholder="10" aria-label="10" aria-describedby="basic-addon1">
+            </div>
+            <button type="button" class="btn btn-primary btn-lg btn-block update_link_button">Update Link</button>
+            <button type="button" class="btn btn-danger btn-lg btn-block delete_link_button">Delete Link</button>
+          </div>
+          <hr />
+          <div class="row">
+            <h1 class="mt-2">Processing</h1>
+            <button type="button" class="btn btn-primary btn-lg btn-block optimize_graph">Optimize Graph</button>
+            <button type="button" class="btn btn-primary btn-lg btn-block  gannt">Show Gannt Chart</button>
+
+
+            <hr />
+          </div>
+        </div>
+
+
+
+        </div>
+    </div>
+  </div>
+    </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

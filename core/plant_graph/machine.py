@@ -2,17 +2,18 @@
 Created by Alejandro Daniel Noel 
 """
 from typing import List
+from math import ceil
 
 from core.plant_graph.ExternalSupplier import ExternalSupplier
-from core.plant_graph.Product import Product
+from core.plant_graph.product import Product
 
 
 class Machine:
     def __init__(self, name,
-                 min_output_rate: float, max_output_rate: float,
+                 batch_size, batch_time, min_batch_time, max_batch_time,
                  output_product: Product,
                  suppliers: List['Machine'] = None, delays: List[float] = None,
-                 is_on=True, output_rate: float = None,
+                 is_on=True,
                  test_suppliers=True):
         """
         
@@ -25,9 +26,10 @@ class Machine:
         :param is_on: whether the machine is working or not
         """
         self.name = name
-        self._min_output_rate = min_output_rate
-        self._max_output_rate = max_output_rate
-        self._output_rate = output_rate or (max_output_rate + min_output_rate) / 2
+        self.min_batch_time = float(min_batch_time)
+        self.max_batch_time = float(max_batch_time)
+        self.batch_time = float(batch_time)
+        self.batch_size = float(batch_size)
         self.output_product = output_product
         self._suppliers = []
         self.next_machines = []
@@ -56,32 +58,35 @@ class Machine:
                 self.add_supplier(new_supplier, 0.0)
 
     @property
-    def min_performance(self):
-        return self._min_output_rate if self.is_on else 0.0
+    def min_output_rate(self):
+        return self.batch_size / self.max_batch_time if self.is_on else 0.0
 
     @property
-    def max_performance(self):
-        return self._min_output_rate if self.is_on else 0.0
+    def max_output_rate(self):
+        return self.batch_size / self.min_batch_time if self.is_on else 0.0
 
     @property
     def output_rate(self):
-        return self._output_rate if self.is_on else 0.0
+        return self.batch_size / self.batch_time if self.is_on else 0.0
 
     @output_rate.setter
     def output_rate(self, value):
-        self._output_rate = value
-
-    @min_performance.setter
-    def min_performance(self, value):
-        self._min_output_rate = value
-
-    @max_performance.setter
-    def max_performance(self, value):
-        self._max_output_rate = value
+        self.batch_time = self.batch_size / value
 
     @property
     def suppliers(self):
         return self._suppliers
+
+    @property
+    def delays(self):
+        return self._delays
+
+    def count_suppliers_of_product(self, product):
+        count = 0
+        for supplier in self.suppliers:
+            if supplier.output_product == product:
+                count += 1
+        return count
 
     def add_next_machine(self, machine: 'Machine'):
         self.next_machines.append(machine)
@@ -91,14 +96,18 @@ class Machine:
         self._delays.append(delay)
         supplier.add_next_machine(self)
 
+    def delay_for_supplier(self, supplier):
+        return self._delays[self._suppliers.index(supplier)]
+
     def to_dict(self):
         the_dict = {}
         for supplier in self._suppliers:
             if isinstance(supplier, Machine):
                 the_dict = {**the_dict, **supplier.to_dict()}
-        the_dict[self.name] = {"min_output_rate": self._min_output_rate,
-                               "max_output_rate": self._max_output_rate,
-                               "output_rate": self._output_rate,
+        the_dict[self.name] = {"min_batch_time": self.min_batch_time,
+                               "max_batch_time": self.max_batch_time,
+                               "batch_time": self.batch_time,
+                               "batch_size": self.batch_size,
                                "is_on": self.is_on,
                                "output_product": self.output_product.name
                                }
@@ -110,3 +119,37 @@ class Machine:
             graph += supplier.get_graph()
         return graph
 
+    def get_scheduling(self, end_time, output_units_required):
+        # Row data: [process_name, start_time, end_time, performance_percent]
+        duration = ceil(output_units_required / self.batch_size) * self.batch_time
+        scheduling = [[self.name,
+                       end_time - duration,
+                       end_time,
+                       100 * self.output_rate / self.max_output_rate]]
+        for supplier in self.suppliers:
+            scheduling += supplier.get_scheduling(end_time=end_time - duration - self.delay_for_supplier(supplier),
+                                                  output_units_required=output_units_required *
+                                                                        self.output_product.sub_products_quantities[supplier.output_product])
+        return scheduling
+
+    def set_supplier_rates(self, required_output_rate):
+        if required_output_rate > self.max_output_rate:
+            return False
+        else:
+            self.batch_time = self.batch_size / required_output_rate
+        for supplier in self.suppliers:
+            supplier_rate = self.output_product.sub_products_quantities[supplier.output_product] * \
+                            self.output_rate / self.count_suppliers_of_product(supplier.output_product)
+            successful = supplier.set_supplier_rates(supplier_rate)
+            if not successful:
+                return False
+        return True
+
+    def search_machine_by_name(self, name):
+        if self.name == name:
+            return self
+        else:
+            for supplier in self.suppliers:
+                machine = supplier.search_machine_by_name(name)
+                if machine is not None:
+                    return machine
